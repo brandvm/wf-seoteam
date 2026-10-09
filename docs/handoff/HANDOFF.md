@@ -41,7 +41,7 @@ of the prototype.
 | URL | Design source | Webflow page | Notes |
 | --- | --- | --- | --- |
 | `/` | Figma `638:3521` (desktop only); prototype `index.html` | Home | 5 of 12 sections confirmed |
-| `/design/style-guide` | prototype `design/style-guide` | Style guide (folder `design`) | excluded from search; not generated yet |
+| `/design/style-guide` | prototype `design/style-guide` (`pnpm style-guide`; hand-written part in `components.html`) | Style guide (folder `design`) | excluded from search; all 172 classes applied (`pnpm check:style-guide`) |
 
 Breakpoints: 991 (tablet), 767 (mobile landscape), 479 (mobile). Checked at
 1680, 820 and 390. Figma has the 1680 desktop frame only; tablet and mobile
@@ -100,6 +100,25 @@ Section map (Figma node → prototype):
   wait for the client.
 - 2026-10-09 · The "Mari's Design" HOME frame (`638:3521`) is the source;
   the "SECTIONS AND IDEAS" board is reference only.
+- 2026-10-09 · Icons are Phosphor **Bold** (its 1.5px stroke at 16px
+  matches Figma's Lucide strokes), inline SVG with `currentColor` so they
+  follow the theme; in Webflow they become SVG DOM elements. Exception:
+  the select caret is a background image (`caret-down-muted.svg`). Social
+  links keep Figma's text badges (in, X, IG, YT): Phosphor's social icons
+  aren't wanted (Kajal).
+- 2026-10-09 · Text tones follow Figma's variables: Text/Secondary ink
+  80%, Text/Muted ink 64% (= #3b2e29 at 72% opacity in the layers),
+  Text/Soft taupe for heading second lines, Text/Faint ink 32% for dates.
+- 2026-10-09 · Hero tag's gradient border is a masked `::before` in repo
+  CSS (`designer-cant`); button shadows, glass blurs and the arrow chip
+  are Designer styles.
+- 2026-10-09 · Disabled button and field state added (40% opacity, no
+  shadow); not in Figma.
+- 2026-10-09 · Font: Inter 3.19 static (400, 500, 600; rsms/inter
+  release, SIL OFL), to match Figma's metrics. Uploaded to Webflow as
+  custom font "Inter" (font ids 6ac9633a93e3d071ae93b983 / …b997 /
+  6ac9633a5ae875a49f5729ee); the prototype loads the same files from
+  `public/fonts`. Family/Base switches to it in the variables batch (P5).
 - 2026-10-09 · Small type deviations accepted for a consistent scale:
   research intro uses Body (lh 1.56, Figma 1.75); research heading
   tracking −6% (Figma −8%); "See More Insights" at 16px (Figma 15px);
@@ -129,5 +148,3 @@ Section map (Figma node → prototype):
   columns, social links, legal links, "See More Insights", the hero card
   arrow, "Get directions" · fill in as pages are built.
 - Contact form select options are stand-ins · form spec.
-- Inter loads from Google Fonts in the prototype; Webflow needs the font
-  uploaded (Family/Base) · Claude, in the variables batch.

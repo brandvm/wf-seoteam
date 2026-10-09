@@ -27,6 +27,20 @@ collected from client repos into those files.
 
 <!-- Add new entries here, newest first. -->
 
+### 2026-10-09 · Buttons drop the inherited letter-spacing
+- Area: css
+- Scope: template-candidate
+- Symptom: FAQ questions wrapped to two lines where Figma has one; the
+  heading's −3% tracking was missing on the text inside it.
+- Cause: the browser's default stylesheet sets `letter-spacing: normal`
+  (and word-spacing, text-transform) on `<button>`; `font: inherit` does
+  not cover letter-spacing.
+- Fix: `letter-spacing: inherit` on every class used on a `<button>`
+  that should take its parent's type (FAQ Trigger); classes that set their
+  own tracking (Button, Nav Link) are fine.
+- Status: fixed (prototype)
+- Found by: claude
+
 ### 2026-10-09 · Figma MCP can't export video fills; the .fig has them
 - Area: designer
 - Scope: template-candidate
