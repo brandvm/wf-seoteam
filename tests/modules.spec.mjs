@@ -42,7 +42,7 @@ test('nav toggle opens the menu; Escape and a link click close it', async ({ pag
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
 });
 
-test('hero shader draws on its canvas, or leaves the poster when WebGL is missing', async ({ page }) => {
+test('hero shader draws on its canvas, or leaves the poster when WebGL is missing or software-rendered', async ({ page }) => {
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.setContent(`<style>${css}</style><div style="position:relative;width:800px;height:500px">
@@ -53,11 +53,15 @@ test('hero shader draws on its canvas, or leaves the poster when WebGL is missin
   const state = await page.evaluate(() => {
     const canvas = document.querySelector('[data-hero-shader]');
     const gl = document.createElement('canvas').getContext('webgl');
-    return { webgl: !!gl, ready: canvas.dataset.heroShader, width: canvas.width };
+    // The module also stays off where WebGL is drawn by the CPU (CI, lab machines).
+    const info = gl && gl.getExtension('WEBGL_debug_renderer_info');
+    const renderer = gl ? String(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER)) : '';
+    const hardware = !!gl && !/swiftshader|llvmpipe|software|basic render/i.test(renderer);
+    return { webgl: hardware, ready: canvas.dataset.heroShader, width: canvas.width };
   });
   expect(errors).toEqual([]);
-  // With WebGL the module marks the canvas ready and sizes its buffer;
-  // without it the module leaves the canvas alone and the image shows.
+  // With hardware WebGL the module marks the canvas ready and sizes its
+  // buffer; otherwise it leaves the canvas alone and the image shows.
   if (state.webgl) {
     expect(state.ready).toBe('ready');
     expect(state.width).toBeGreaterThan(300);
