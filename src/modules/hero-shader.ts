@@ -173,9 +173,19 @@ export function initHeroShader() {
   });
 }
 
+// True when WebGL is drawn by the CPU (no graphics card: lab machines such
+// as PageSpeed's, virtual desktops, some old devices). There every frame is
+// main-thread work, so the shader is not started and the still image stays.
+function softwareRendered(gl: WebGLRenderingContext) {
+  const info = gl.getExtension('WEBGL_debug_renderer_info');
+  const renderer = String(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER));
+  return /swiftshader|llvmpipe|software|basic render/i.test(renderer);
+}
+
 function mount(canvas: HTMLCanvasElement) {
   const gl = canvas.getContext('webgl', { antialias: false, alpha: false, powerPreference: 'low-power' });
   if (!gl) return;
+  if (softwareRendered(gl)) { gl.getExtension('WEBGL_lose_context')?.loseContext(); return; }
 
   const compile = (type: number, source: string) => {
     const shader = gl.createShader(type)!;
