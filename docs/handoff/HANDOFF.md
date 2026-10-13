@@ -75,6 +75,25 @@ is not updated for it yet (`pnpm check:style-guide` lists 26 classes), and
 keyword map next to it; those cover the service and industry pages too,
 which are not started.
 
+2026-10-13 (evening) — **In Webflow and on staging.** Kajal approved the
+new home design. Variables (Rail/Inset 5em, Brand/Plum, Brand/Charcoal)
+and classes (43 updated, 36 new) were written and read back identical to
+`new-classes-home-v2.css`. Home is rebuilt from the prototype and
+published: at 1680, 1280, 820 and 390 every section has the prototype's
+height except Contact (+14px, Webflow's form block), same class set, text
+and hooks. The Style Guide page is rebuilt in the template's fixed layout
+(11 sections, all 401 classes of the generated page) and `/design/media`
+exists as on the starter (no videos: the site plays none). The asset
+library is in folders with alt text; nothing was deleted (old versions are
+in "Previous design (not used)"). Repo: modules and repo CSS for the new
+home are on `master` (`feda28d`), the Dev/Staging switcher and the Made in
+Webflow badge are hidden on staging for now (`9d723d9`, `974abe1`). The
+Inter files were subset to Latin (about 22 KB each, were about 100 KB;
+full files in `../Assets/fonts/inter-full/`) and replaced in Webflow.
+Lighthouse on staging after that, local, DNS stall off: mobile 94–95,
+desktop 99. The nav wrapper is `position: fixed` (Kajal). Open: MANUAL-TODO
+E–K; the prototype's Webflow snapshot still needs a refresh.
+
 ## Ground rules for this project
 
 - Prototype first (wf-template workflow): the design is built and
