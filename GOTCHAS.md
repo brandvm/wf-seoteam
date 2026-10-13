@@ -27,6 +27,23 @@ collected from client repos into those files.
 
 <!-- Add new entries here, newest first. -->
 
+### 2026-10-13 · "Made in Webflow" badge hidden in repo CSS, for now
+- Area: css
+- Scope: project
+- Symptom: the badge shows on seo-teams.webflow.io; Kajal wanted it gone
+  while the staging site is shown around.
+- Cause: the badge is a site setting (Site settings › General) that can
+  only be switched off on a paid Workspace or site plan; the API has no
+  control for it.
+- Fix: `html .w-webflow-badge { display: none !important; }` in
+  `src/styles.css` §03, tagged `override-webflow`, approved by Kajal as
+  temporary. Hiding the badge on an unpaid site is against Webflow's
+  terms: remove the rule when the plan is in place and the setting is off.
+  In the same round the Dev/Staging switcher was hidden on this host
+  (`environment-switcher.ts`; `?wfc-switcher` shows it).
+- Status: open (remove both before launch)
+- Found by: human
+
 ### 2026-10-13 · A later stylesheet's base rule beats an earlier breakpoint rule
 - Area: css
 - Scope: template-candidate

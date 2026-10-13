@@ -267,6 +267,15 @@ svg {
   display: contents;
 }
 
+/* repo-css: override-webflow — TEMPORARY (Kajal, 2026-10-13): hides the
+   "Made in Webflow" badge on staging while the site is shown around. The
+   proper switch is Site settings › General › Display "Made in Webflow"
+   badge, which needs a paid plan; delete this rule once that is set (see
+   GOTCHAS.md). `html` in front outranks Webflow's own !important rule. */
+html .w-webflow-badge {
+  display: none !important;
+}
+
 /* ============================================================
    04. DOCUMENT STATE
    ============================================================ */
