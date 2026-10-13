@@ -85,8 +85,10 @@
    meaning, and the Designer canvas shows the same scale (it loads this sheet).
 
    Desktop: 1em = --size-unit px at the design frame (--size-container-ideal,
-   no unit) and above, up to --size-container-max; it shrinks with the
-   viewport down to --size-container-min and holds from there to 992px.
+   no unit); it grows with the viewport up to --size-container-max and
+   shrinks down to --size-container-min, holding from there to 992px.
+   This project: frame 1680, scaling 1440–1920 (set by Kajal, 2026-10-12),
+   so 1em runs from 13.71px to 18.29px.
    Tablet and mobile (991px and below): a fixed 1rem; the variables'
    breakpoint modes do the resizing there. Set ideal/min/max to the design
    before the prototype (webflow-build › checklists › Before the
@@ -96,7 +98,7 @@
 :root {
   --size-container-ideal: 1680;
   --size-container-min: 1440px;
-  --size-container-max: 1680px;
+  --size-container-max: 1920px;
   --size-container: clamp(var(--size-container-min), 100vw, var(--size-container-max));
   --size-font: calc(var(--size-container) / (var(--size-container-ideal) / var(--size-unit)));
 }

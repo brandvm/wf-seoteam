@@ -24,4 +24,4 @@ mentioned in GOTCHAS or a commit stays unambiguous.
 
 | ID | Where (page › element or class) | Breakpoint | Set | Why the API can't | Done |
 | --- | --- | --- | --- | --- | --- |
-| A | | Desktop | | | ☐ |
+| A | Class **Form Input** › **Is Select** | Desktop | Backgrounds → image: upload `prototype/public/assets/caret-down-muted.svg`; position right `1.0667em`, centre; size `1.0667em`; no tile (size and tile are already set) | A background image needs an asset picked in the Designer; the API stored the size but dropped `background-position` while there was no image | ☐ |

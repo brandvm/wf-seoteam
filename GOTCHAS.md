@@ -27,6 +27,45 @@ collected from client repos into those files.
 
 <!-- Add new entries here, newest first. -->
 
+### 2026-10-12 · Checked at three widths, broke between them
+- Area: css
+- Scope: template-candidate
+- Symptom: the prototype passed at 1680, 820 and 390, but between 992 and
+  1440 the contact form, logo strip, badges and footer columns ran off
+  screen, and the centred nav menu overlapped the nav buttons. The person
+  found it, not a check.
+- Cause: the fluid scale holds at the min width (1440) down to 992, so
+  anything sized in fixed em stops fitting there; an absolutely centred
+  menu knows nothing about its neighbours. The three check widths never
+  land in that range.
+- Fix: grid columns as `minmax(0, Nfr)` in the design's proportions,
+  `min-width: 0` on flex and grid children that must shrink, a
+  `1fr auto 1fr` grid for the nav. Check with a script at many widths
+  (2560 … 360, including 1366, 1280, 1200, 1100, 1024, 992): every
+  element's right edge against the viewport and its parent, plus the gaps
+  between nav items. A wf:overflow check would be worth adding to the
+  skill's scripts.
+- Status: fixed (prototype and Webflow classes)
+- Found by: human
+
+### 2026-10-12 · Three small traps in one sync
+- Area: designer
+- Scope: template-candidate
+- Symptom / cause / fix:
+  - Logos disappeared when their row moved inside S Wrapper: S Wrapper
+    is `position: relative; z-index: 1`, a stacking context, so the
+    row's `mix-blend-mode` no longer blended with the band behind it.
+    Keep blended elements out of S Wrapper (cap them directly).
+  - A bar with a small type class (Caption) had narrower side padding
+    than the sections: its padding variable is in em and was computed
+    against 13px. Put the type class on the inner row, not on the padded
+    wrapper (conventions.md §6).
+  - `background-position` sent with no background image was dropped
+    silently (the call reported success). Read back after writing; set it
+    in the Designer with the image.
+- Status: fixed
+- Found by: claude
+
 ### 2026-10-09 · Variable batch: a suffixed name, rename works, modes inherit
 - Area: mcp
 - Scope: template-candidate
