@@ -489,6 +489,47 @@ html.is-loading body {
   }
 }
 
+/* repo-css: js-state — Read More buttons reuse src/modules/faq.ts
+   (aria-expanded, hidden): the caret flips when open; src/modules/tabs.ts
+   sets hidden on the service panes it closes. */
+.read-more[aria-expanded="true"] .read-more-icon {
+  transform: rotate(180deg);
+}
+
+.read-more-panel[hidden],
+.service-pane[hidden] {
+  display: none;
+}
+
+/* repo-css: js-state — src/modules/panel-shader.ts marks its canvas with
+   data-ready after the first frame; the canvas fades in over the still
+   image instead of popping. */
+.s-bg-canvas[data-panel-shader] {
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+
+.s-bg-canvas[data-panel-shader][data-ready] {
+  opacity: 1;
+}
+
+/* repo-css: designer-cant — child style on parent hover: the arrow chip
+   of an industry tile turns accent while the tile is hovered. */
+.industry-tile:hover .button-chip {
+  border-color: transparent;
+  background-color: #f84c1c;
+}
+
+/* repo-css: designer-cant — hidden scrollbar on the testimonial track
+   (::-webkit-scrollbar); the arrows and touch scroll it. */
+.slider-track {
+  scrollbar-width: none;
+}
+
+.slider-track::-webkit-scrollbar {
+  display: none;
+}
+
 /* The list indent and the first/last-child margin trims already live in
    §03 — that is where the rest of the Rich Text patching sits, and its
    versions also cover the wrapper div Webflow sometimes nests. */

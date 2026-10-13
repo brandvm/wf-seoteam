@@ -28,9 +28,24 @@ classes for the five sections (179 styles; read back and diffed against
 the prototype: identical except the select caret, see MANUAL-TODO A).
 The prototype now renders from the refreshed snapshot, so it shows what
 Webflow holds. Nothing is published and no element is on a page yet.
-Pending approval: the hero shader (prototype only) and its S Bg Canvas
-class. Next: the Sg style-guide classes and page, tag styles, then the
+The hero shader was approved (Kajal) and is in the repo
+(`src/modules/hero-shader.ts`) with its S Bg Canvas class in Webflow.
+Next: the Sg style-guide classes and page, tag styles, then the
 sections (Home needs the To Slot drag).
+
+2026-10-12 (later) — The rest of the home page was approved for Webflow
+(Kajal): variables Brand/Stone and Radius/16, the 149 new classes and
+combos (209 actions; read back and diffed: identical to the prototype),
+Dark mode on Glow Panel and Case Card Is Dark / Is Orange, and all 44
+images in the asset library. The style guide page is built in Webflow
+from the reorganised prototype page (13 sections with a menu; Sg classes
+and 61 variable-bound swatch/scale combos) inside a To Slot wrapper, and
+published to staging: every one of the prototype page's 383 class names
+is on it and all 39 images load. Open on that page: MANUAL-TODO C, D, E;
+its 24 `<button>`s are still Links (to rebuild as DOM buttons); the form's
+submit is a plain Webflow form button. The home sections themselves are
+not built in Webflow yet. The prototype snapshot still needs a refresh so
+`new-classes.css` empties into `webflow.css`.
 
 ## Ground rules for this project
 
@@ -78,8 +93,7 @@ Section map (Figma node → prototype):
 - Approval state: P1–P9 approved and made in Webflow 2026-10-09; P10–P12
   and every class in `new-classes.css` approved and made 2026-10-12
   (Kajal). `proposed.css` is empty; `new-classes.css` holds only the
-  pending S Bg Canvas class, the select caret (manual) and the rules that
-  live in repo CSS.
+  select caret (manual) and the rules that live in repo CSS.
 
 ## CMS
 
@@ -101,7 +115,7 @@ Section map (Figma node → prototype):
 | --- | --- | --- |
 | `nav` | `data-nav-toggle`, `data-nav-menu` | Opens/closes the menu below 992px (`.is-open` on the nav); Escape and link clicks close it |
 | `faq` | `data-faq-trigger` + `aria-controls` | Opens each answer in place (`hidden`, `aria-expanded`) |
-| `hero-video` | `data-hero-video` | Starts the muted hero video; with reduced motion it stays paused on the poster |
+| `hero-shader` | `data-hero-shader` (a `canvas` in the hero's S Bg, class S Bg Canvas, after the poster image) | Draws the hero background in WebGL: ribbed glass, a dark wave every 6s from bottom-left to top-right, a light that follows the pointer. Leaves the poster image showing without WebGL; one still frame with reduced motion; pauses off screen |
 
 ## Decisions
 
@@ -152,12 +166,32 @@ Section map (Figma node → prototype):
   follows the pointer. Rib edges are anti-aliased in the shader; the
   canvas has a 2.5M-pixel budget and lowers its own resolution when
   frames run long. Poster image underneath as fallback; one still frame
-  for reduced motion; paused off screen. Awaiting Kajal's review; the
-  repo still has the `hero-video` module until then.
+  for reduced motion; paused off screen. Approved by Kajal and moved to
+  the repo 2026-10-12; `hero-video` removed. The video file stays in
+  `prototype/public/assets` as the source of the poster.
 - 2026-10-09 · Small type deviations accepted for a consistent scale:
   research intro uses Body (lh 1.56, Figma 1.75); research heading
   tracking −6% (Figma −8%); "See More Insights" at 16px (Figma 15px);
   stat numbers tracking −4% (Figma −5%).
+
+- 2026-10-12 · Rest of the home page built in the prototype (services, why,
+  approach, case studies, industries, testimonials): **pending approval**,
+  nothing of it is in Webflow or this repo yet. New classes are in
+  `prototype/src/css/new-classes.css`, two new variables (Brand/Stone,
+  Radius/16) in `proposed.css`; the style guide doesn't carry them yet
+  (`pnpm check:style-guide` fails until it does).
+- 2026-10-12 · Backgrounds, as asked by Kajal: the dark panels (AI
+  technology, industries, the dark case card) get clean columns of orange
+  light whose wave travels left to right in a 9 s loop, 1px dividers, no
+  texture, no pointer reaction (`panel-shader`). The contact panel runs
+  the hero shader in a dark palette (`data-shader-theme="dark"`). Orange
+  cards and the diagram use Figma's textures as still images. PageSpeed is
+  the priority: every canvas sits on a still image, the hero's starts
+  after the first paint, the others when they near the viewport, and none
+  of the lower ones run below 768px, with reduced motion or Save-Data.
+  Not Figma's own shader runtime: it needs WebGPU and an experimental flag.
+- 2026-10-12 · Testimonials: three cards fill the row, on the same grid as
+  the three cards below; native scroll-snap, no slider library.
 
 ## Open decisions
 
@@ -183,3 +217,11 @@ Section map (Figma node → prototype):
   columns, social links, legal links, "See More Insights", the hero card
   arrow, "Get directions" · fill in as pages are built.
 - Contact form select options are stand-ins · form spec.
+- Services tabs: only "Organic Search Growth" has copy in Figma; the other
+  three cards say "Placeholder copy" · client.
+- "Read more" (why pillars, Vantage, Horizon): the expanded text isn't in
+  Figma; panels say "Placeholder copy" · client.
+- Case studies, industries and testimonials are static placeholders (one
+  quote ×6, one avatar ×3) until their collections and pages exist ·
+  client / designer. The featured case's figure reads "+168+" in Figma;
+  the prototype shows "+168%" · designer to confirm.

@@ -27,6 +27,63 @@ collected from client repos into those files.
 
 <!-- Add new entries here, newest first. -->
 
+### 2026-10-12 · WHTML importer: six things learned building the style guide
+- Area: mcp
+- Scope: template-candidate
+- Symptom / cause / fix:
+  - An inline `style="background: var(--x)"` becomes a junk combo
+    (`inline-div-0`) on the element's class. Generate named combos bound
+    to the variable instead (Sg Swatch Color + Is Brand Ink) and create
+    them before importing; `gen-style-guide.mjs` now does this.
+  - A boolean attribute imports as `hidden=""` and reads back, but is
+    not in the published HTML. Set it with a value (`hidden="hidden"`)
+    after the import; that one publishes.
+  - Every `<img>` attribute but `alt` is dropped, including a `data-*`
+    marker. Bind assets by matching Image elements to the markup in
+    document order, checking the class of each pair.
+  - Collapsing whitespace between tags (`>\s+<`) to keep the payload
+    small also removes the word space between inline spans ("Strategyfor").
+    Keep one space between inline neighbours; repaired with `set_text`
+    on the Span (" for …").
+  - A form import adds empty combos (`.form._w-form`, `._w-input`,
+    `.form-input._w-select`, `.button._w-button`) and gives every field
+    `id="field"`; a `<button type="submit">` with children becomes a
+    plain form button. Remove the stray combos afterwards.
+  - One imported `<section>` came in as type Section without its id, and
+    then refused `set_dom_id` on itself and its wrapper (component-map
+    conflict); `set_attributes` can't write `id` at all. Left as a manual
+    step (MANUAL-TODO E).
+  Sizes that worked: 3 root elements and up to 15 KB per call.
+- Status: open
+- Found by: claude
+
+### 2026-10-12 · A WebGL context before the first paint delays that paint
+- Area: perf
+- Scope: template-candidate
+- Symptom: Lighthouse mobile showed an observed first paint at 2.1 s on
+  localhost with 0 ms blocking time; desktop was fine.
+- Cause: the hero shader created its WebGL context and compiled during
+  boot. Where the GPU is emulated (headless Chrome, lab tests) that work
+  holds back the first frame without showing up as main-thread time.
+- Fix: a canvas on screen at load starts after `load`, two animation
+  frames and idle time; the still image is the first paint. Observed first
+  paint went to 0.26 s. Canvases further down start near the viewport.
+- Status: open (prototype only; move to `src/modules/hero-shader.ts` with
+  the rest of the home page)
+- Found by: claude
+
+### 2026-10-12 · A screenshot of a canvas includes what sits on top of it
+- Area: perf
+- Scope: template-candidate
+- Symptom: the still image made for a shader panel had the panel's text
+  baked into it.
+- Cause: a Playwright element screenshot captures the page region, not the
+  canvas pixels.
+- Fix: hide the overlapping content (`visibility: hidden`) before
+  capturing a still from a canvas.
+- Status: fixed (prototype asset regenerated)
+- Found by: human
+
 ### 2026-10-12 · Checked at three widths, broke between them
 - Area: css
 - Scope: template-candidate

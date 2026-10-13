@@ -3,8 +3,11 @@
 // function that no-ops when its selector is absent from the page.
 import { initEnvironmentSwitcher } from './modules/environment-switcher';
 import { initFaq } from './modules/faq';
-import { initHeroVideo } from './modules/hero-video';
+import { initHeroShader } from './modules/hero-shader';
 import { initNav } from './modules/nav';
+import { initPanelShader } from './modules/panel-shader';
+import { initSlider } from './modules/slider';
+import { initTabs } from './modules/tabs';
 
 // Each module runs in isolation: one that throws is logged and skipped,
 // and every module after it still initializes.
@@ -26,7 +29,10 @@ function boot() {
   run('environment-switcher', initEnvironmentSwitcher);
   run('nav', initNav);
   run('faq', initFaq);
-  run('hero-video', initHeroVideo);
+  run('hero-shader', initHeroShader);
+  run('tabs', initTabs);
+  run('slider', initSlider);
+  run('panel-shader', initPanelShader);
   // Add project feature initializers here: run('<name>', init<Name>);
 }
 
