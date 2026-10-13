@@ -3,6 +3,11 @@
 export function initEnvironmentSwitcher() {
   const config = window.WFC;
   if (!/\.webflow\.io$/.test(location.hostname) || !config) return;
+  // Temporarily hidden on this project's staging site while it is being
+  // shown around (Kajal, 2026-10-13). Add ?wfc-switcher to the URL to get it
+  // back for a visit; ?wfc-dev=1 still switches to the local bundle without
+  // it. Remove these lines to show it to everyone again.
+  if (location.hostname === 'seo-teams.webflow.io' && !new URLSearchParams(location.search).has('wfc-switcher')) return;
   if (window.Webflow?.env?.('editor') || window.Webflow?.env?.('design')) return;
   if (document.getElementById('wfc-environment')) return;
 
