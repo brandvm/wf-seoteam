@@ -436,6 +436,57 @@ html.is-loading body {
   margin-bottom: 0.25em;
 }
 
+/* repo-css: designer-cant — child style on parent hover: the research
+   card's image zooms while the card is hovered. (The title's hover colour
+   is on Article Card itself in the Designer; the title inherits it.) */
+.article-card:hover .article-card-img {
+  transform: scale(1.04);
+}
+
+/* repo-css: designer-cant — gradient border on the hero tag (Figma: cream
+   20% → 12% at 46% → 20%, inside, 1px). Webflow has no gradient border and
+   can't style ::before; a masked pseudo-element draws it and follows the
+   radius. Chip Is Glass is position: relative in the Designer. */
+.chip.is-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(247, 243, 243, 0.2), rgba(247, 243, 243, 0.12) 46%, rgba(247, 243, 243, 0.2));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+/* repo-css: designer-cant — :disabled (Webflow has no disabled state).
+   Disabled controls ignore hover and press. */
+.button:disabled,
+.button[aria-disabled="true"],
+.form-input:disabled {
+  opacity: 0.4;
+  box-shadow: none;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* repo-css: js-state — src/modules/faq.ts sets aria-expanded and hidden;
+   src/modules/nav.ts toggles .is-open on the nav below 992px. */
+.faq-trigger[aria-expanded="true"] .faq-icon-bar.is-vertical {
+  transform: rotate(0deg);
+}
+
+.faq-panel[hidden] {
+  display: none;
+}
+
+@media screen and (max-width: 991px) {
+  .g-nav.is-open .nav-menu {
+    display: flex;
+  }
+}
+
 /* The list indent and the first/last-child margin trims already live in
    §03 — that is where the rest of the Rich Text patching sits, and its
    versions also cover the wrapper div Webflow sometimes nests. */
