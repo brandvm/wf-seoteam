@@ -27,6 +27,25 @@ collected from client repos into those files.
 
 <!-- Add new entries here, newest first. -->
 
+### 2026-10-09 · Variable batch: a suffixed name, rename works, modes inherit
+- Area: mcp
+- Scope: template-candidate
+- Symptom: in a batch of ~200 variable writes (all succeeded, no 429 at
+  20 per call), `create_color_variable` "Paper Tint/Paper 4" came back
+  named "Paper Tint/Paper 4-9" (CSS `--…paper-4-9`). No other variable
+  had that name.
+- Cause: unconfirmed; probably a deleted variable of the starter still
+  holds the name. Webflow suffixes silently and reports success.
+- Fix: check the `name` in every create result. `rename_variable` now
+  works through the MCP (ids and aliases kept; the CSS name follows), so
+  AGENTS.md › Webflow MCP limits "No variable rename" is out of date.
+  Also seen: a variable created in a collection with modes takes its base
+  value in every mode (read back: no gaps), so only the modes that differ
+  need a write; and an update without `mode_id` writes Base only, so a
+  role change that must hold at every breakpoint is four writes.
+- Status: workaround confirmed
+- Found by: claude
+
 ### 2026-10-09 · Buttons drop the inherited letter-spacing
 - Area: css
 - Scope: template-candidate
