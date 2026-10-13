@@ -6,6 +6,37 @@ Harvested from client builds made from this template (`Scope:
 template-candidate` entries in their `GOTCHAS.md`). Module and file names
 refer to the project the lesson came from; Status is that project's.
 
+### 2026-10-09 · CMS text bindings inside JSON-LD can break the schema
+- Area: designer
+- Symptom: adding `"alternativeHeadline": "{{wf subheading}}"` to a CMS
+  template's BlogPosting JSON-LD made it invalid on items whose field ends
+  with a line break (caught only by validating every CMS page).
+- Cause: Webflow inserts PlainText field values raw into custom code: line
+  breaks are not escaped (invalid JSON) and apostrophes become `&#39;`
+  (valid JSON, wrong text).
+- Fix: bind only single-line fields (name, slug, dates, image) in JSON-LD;
+  validate every CMS page after a schema change, not a sample.
+- Status: open (Webflow behaviour)
+- Found by: claude
+
+### 2026-10-09 · Phone hero video: serve what `object-fit: cover` actually shows
+- Area: designer, perf
+- Symptom: a full-screen 16:9 hero video downloaded the same 6–7 MB file
+  on phones, where portrait `cover` shows only the centre strip; the WebM
+  source was listed first and was the larger file.
+- Fix: first `<source>` = a centre crop (e.g. 540×720 of a 1280×720 file,
+  `ffmpeg -vf crop=540:720`) with `media="(max-width: 767px) and
+  (orientation: portrait)"`; a 3:4 crop covers every portrait aspect up to
+  0.75, so `cover` still fills the box with the same framing (SSIM 0.99
+  vs the same crop of the original). Then the desktop MP4; drop the WebM if
+  it is larger. Add `poster` = the video's first frame (WebP, a few KB).
+  `<source media>` works in Chrome/Firefox 120+ and Safari. Re-encoding the
+  desktop files at matching quality saved nothing. A muted preview loop
+  that is a full-length YouTube download (with audio) should be a short
+  clip instead: 56 MB → 4 MB.
+- Status: done
+- Found by: claude
+
 ### 2026-10-05 · A two-class combo can't be edited from a three-class element
 - Area: designer
 - Symptom: The value for Section + Is Hero had to be entered, but every
@@ -193,3 +224,38 @@ refer to the project the lesson came from; Status is that project's.
   any canvas-visible markup (stylesheets, icon fonts) out of script Embeds.
 - Status: fixed in the template's loader.html
 - Found by: human
+
+### 2026-10-09 · Image Load (lazy/eager) is per instance; preload doesn't fix render delay
+- Area: designer
+- Symptom: the LCP image (a hero, or a CMS image on a template page) was
+  lazy-loaded. The image element's Load setting (Lazy / Eager) isn't
+  exposed through the MCP or the API, and on a component it is set per
+  instance.
+- Cause: Designer-only setting.
+- Fix: set Load › Eager on each LCP instance in the Designer (a manual
+  step). To start the download earlier, page head code can add
+  `<link rel="preload" as="image" href="…">`; on a CMS template page the
+  href can bind a field with
+  `{{wf {&quot;path&quot;:&quot;<field-slug>&quot;,&quot;type&quot;:&quot;ImageRef&quot;\} }}`.
+  That only moves the download: when Lighthouse shows LCP "render delay",
+  the cause is render-blocking resources (stylesheets and scripts before
+  the image), which preload does not change.
+- Status: documented
+- Found by: claude
+
+### 2026-10-13 · A space as an element's only text publishes as `&nbsp;` and shifts an icon
+- Area: designer
+- Symptom: icons drawn by an icon font sat left of and above their box.
+  The element was an inline-flex 1em box with its content centred, holding
+  one space so the canvas wouldn't show it as empty.
+- Cause: Webflow publishes that space as a non-breaking space. A normal
+  space is dropped inside a flex container; a non-breaking one is a flex
+  item with a width. The glyph (`::before`) and the space were centred as
+  a pair, so the glyph moved by half the space's width.
+- Fix: `justify-content` and `align-items` flex-start on the glyph
+  element. The glyph fills the box from its corner and the space overflows
+  unseen. Check icon alignment on the published page with an outline on
+  the element, not by eye.
+- Status: fixed in the starter site
+- Found by: human
+

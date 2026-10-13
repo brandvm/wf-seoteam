@@ -13,8 +13,9 @@ without restructuring:
 ```
 body
 ├── G | Components         component, class G | Components + aria-hidden="true"
-│                          (fixed, 0×0, invisible): GTM, site-wide scripts and
-│                          embeds, incl. the loader's Embeds 2a (link) and 2b (script)
+│                          (fixed, 0×0, invisible), in this order:
+│                          Embed · site code (GTM noscript), then the loader's
+│                          Embeds 2a (link) and 2b (script), 2b directly after 2a
 └── G | Page W             component, class G | Page W (Barba: data-barba="wrapper")
     ├── Skip link          → #main (first focusable element on every page)
     ├── G | Nav W          component: div G | Nav W › nav G | Nav
@@ -46,6 +47,12 @@ Components carry the name of their root class (**G | Components**,
   `aria-hidden="true"` on its root hides it from screen readers too: only
   code goes in it. Anything visible or focusable that every page needs
   (the skip link, a popup, a banner) goes in G | Page W.
+- **Site code embed** (first child of G | Components, empty in the
+  starter): body-start code every page needs, such as Google Tag Manager's
+  `<noscript>` iframe, which GTM wants right after `<body>` opens.
+  GTM's main `<script>` goes in Site settings › Head code, not here: an
+  Embed runs later than head code, and the canvas skips an Embed that holds
+  a script. Keep 2a and 2b last and adjacent; 2b finds 2a by id.
 
 - **G | Page W is one component on every page**, so anything added to it
   (a band under the footer, a newsletter popup, a banner above the nav)
@@ -164,6 +171,17 @@ primitives; nothing in a class holds a raw value that a variable could hold.
 | **Spacing** | gaps and small sizes | `None`, `Hairline`, `2`, `4`, `8`, `12`… (px names, em values) | Base only |
 | **Radius** | corner radii | `None`, `2`, `4`, `8`, `Pill` | Base only |
 
+- **A standard, not a limit.** The collections, names and starter values
+  above are the default layout and the default way to use variables. A
+  project changes values freely and adds, renames or removes variables,
+  modes and collections when its design needs to, proposed as old → new.
+  The default font (`Family/Base`) is Geist, with its stylistic sets
+  `ss03` and `ss08` turned on once, on the Body tag style
+  (`font-feature-settings`, a custom property; all text inherits it). The
+  font is the official file uploaded as a custom font, not Google Fonts'
+  Geist, which leaves those sets out (`starter-site.md` §A). A project
+  with its own typeface replaces the font and removes or changes the
+  feature setting with it.
 - **Group/Name**, both in Title Case with spaces. The group is the folder in
   the Designer and becomes part of the CSS name.
 - **Name by role, never by value or place:** `Text/Secondary`, not
@@ -262,6 +280,16 @@ has been set on it), then bind through the MCP:
 
 ## 10. Components
 
+- **Start from the starter's control components** (`starter-site.md` §D2):
+  Icon, C | Button (Button Color › Button Size › Button Content), C | Icon
+  Button, C | Video, Section Head. Restyle their variants for the design;
+  add a variant before adding a class. Searchable selects, accordions,
+  sliders and lightboxes are not in the starter: they are built when a
+  site needs one, from a recipe where there is one (`recipes/`; the
+  searchable select is `recipes/finsweet/searchable-select.md`).
+- **Icons** are the Icon component (colour and size on one component): type `ph ph-<name>` into its prop
+  (`recipes/phosphor/`). Brand and social logos are uploaded SVGs.
+
 - **Make a component when behaviour should appear only where you place it.**
   The behaviour lives inside it as a `data-*` attribute (a Gallery's
   `data-lightbox`). If the same markup is needed without the behaviour, make a
@@ -301,27 +329,32 @@ has been set on it), then bind through the MCP:
 
 ## 12. Style guide page
 
-Made per project when the person asks, prototype first:
-[style-guide.md](style-guide.md) has the procedure.
+The `webflow-style-guide` skill has the layout, the generator, the check and
+the procedure. In short:
 
+- **First page built,** in the prototype and then in Webflow, before any
+  other page; every later class or component adds its row in the same piece
+  of work.
+- **One layout on every site:** a sidebar of sections, each section a list
+  of rows (name, class and note on the left; the live specimen on the
+  right). The sections, their order and the row are fixed in the skill; a
+  project supplies content only.
 - A page in a `design` folder (`/design/style-guide`), excluded from search
   and the sitemap, `noindex` in its head code, links with
   `data-barba-prevent`.
 - **Every class in the project is applied to at least one element on it**, so
   "Clean up unused styles" can never delete a class used only by the CMS, a
-  script or a page not built yet. Generate the page and check this with a
-  script.
-- **Sections:** colours, typography (roles and utilities as specimens),
-  spacing, radius, buttons and states, form parts, components, then page
-  components.
-- **Page component previews** keep page-specific classes alive until their
-  page exists. Remove a preview once its page is built; generic sections stay
-  for good.
+  script or a page not built yet. `pnpm check:style-guide` checks this and
+  the layout.
+- **Page section previews** keep page-specific classes alive until their
+  page exists. Remove a preview once its page is built; the other sections
+  stay for good.
 
 ## 13. Before Webflow: the prototype phase
 
-When the design is first built as a localhost prototype (start from
-[prototype-starter/](prototype-starter/README.md)):
+The `webflow-prototype` skill runs this phase (its
+[prototype-starter/](../webflow-prototype/prototype-starter/README.md) is
+the folder a project starts from). In short:
 
 - **It mirrors Webflow:** the same URLs, the same breakpoints (991, 767, 479),
   the Webflow class names, and the page shell and section structure above.
@@ -338,6 +371,9 @@ When the design is first built as a localhost prototype (start from
 
 ## 14. Media
 
+- **Videos go through the media page** ([media.md](media.md)): uploaded
+  once at `/design/media`, hosted by Webflow, and used on the real pages
+  by address.
 - **Hero video:** MP4 (H.264, fast start, no audio), at most 30 MB for
   Webflow's Background Video, with a poster image; a smaller encode for
   phones. Skip WebM when it is larger than the MP4.

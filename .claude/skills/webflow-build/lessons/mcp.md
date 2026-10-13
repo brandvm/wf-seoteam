@@ -6,6 +6,59 @@ Harvested from client builds made from this template (`Scope:
 template-candidate` entries in their `GOTCHAS.md`). Module and file names
 refer to the project the lesson came from; Status is that project's.
 
+### 2026-10-09 · Upload a local file as an asset without a public URL
+- Area: mcp
+- Symptom: `asset_tool › upload_image_by_url` only takes a public URL, so a
+  locally optimised image or video seemed to need a commit/push or a manual
+  upload.
+- Cause: the Designer-side tool fetches remotely; the Data API route is
+  not obvious.
+- Fix: `data_assets_tool › create_asset` with the file name and the **MD5
+  hex** of the bytes returns `uploadUrl` + `uploadDetails`; POST them as
+  multipart form fields with curl (`-F key=… -F Policy=… -F
+  X-Amz-Signature=… -F Content-Type=… -F "file=@path;type=…"`), expect
+  201. The file is on `cdn.prod.website-files.com` at once and answers byte
+  ranges (206), so MP4s work in Safari. Then set it: an Image element via
+  `set_image_asset`, a component Image prop via
+  `set_component_instance_prop_values` with `type: "string"` and the asset
+  id. An instance showing `hasOverride: false` uses the component default —
+  override that instance rather than changing the default, which other
+  instances inherit. Caution: on another project, uploads made this way
+  stayed at size 0 with no variants and components kept showing their
+  default image (see "API-uploaded assets stay size 0 and don't render in
+  components"). After uploading, check `get_asset` size and variants and
+  look at the published page before relying on it.
+- Status: worked around
+- Found by: claude
+
+### 2026-10-09 · `set_attributes` works on DOM elements, fails on Image elements
+- Area: mcp
+- Symptom: `crossorigin` on an Image element failed with an internal error
+  (twice, Designer connected); Image settings expose no attributes key.
+- Cause: unknown; Image elements don't take custom attributes over the API.
+- Fix: the same call works on DOM elements (`video` `poster`, `source`
+  `src`/`type`/`media`), on Links (`aria-label`, also inside component
+  definitions with `scope_component_id`), on form labels (`for` — Webflow
+  emits `for=""` by default, and the attribute replaces it) and on DOM
+  `button`s. For an Image, add the attribute in the Designer (manual
+  step). CMS-bound attribute values (e.g. `aria-label` = item title on a
+  card link) go through `set_settings` › `attributes` with `value_binding`
+  — it replaces the whole list, so read the existing attributes first.
+- Status: worked around
+- Found by: claude
+
+### 2026-10-09 · `publish_site` wants custom domain IDs, and counts toward the 1/min limit
+- Area: mcp
+- Symptom: `customDomains: ["www.example.com"]` → 400 "valid custom domain
+  ID"; a retry straight after → 429 "at most once per minute".
+- Cause: the parameter takes the domain IDs from `get_site` ›
+  `customDomains[].id`, not hostnames; staging and production publishes
+  share the per-site limit.
+- Fix: read the IDs once (`get_site`); wait out the limit with a timed
+  loop. Staging-only = `publishToWebflowSubdomain: true, customDomains: []`.
+- Status: worked around
+- Found by: claude
+
 ### 2026-10-02 · Only one collection can take breakpoint auto-modes
 - Area: mcp
 - Symptom: `create_variable_mode` with `breakpoint_id` worked for Typography
@@ -431,3 +484,187 @@ refer to the project the lesson came from; Status is that project's.
   changing anything else because of a snapshot.
 - Status: open
 - Found by: claude
+
+### 2026-10-09 · WHTML importer turns inline styles into `inline-div-N` combos
+- Area: mcp
+- Symptom: importing style guide swatches written as
+  `<div class="sg-swatch-color" style="background: var(--…)">` created 71
+  new combo classes on Sg Swatch Color, named `inline-div-1` … `-71`, each
+  holding the raw `background: var(--…)` string.
+- Cause: the importer converts every `style` attribute into a combo class
+  instead of keeping it as an attribute or an element style.
+- Fix: never put `style=""` in import markup. Pre-create a role combo per
+  value (e.g. `Is Bg Accent`, `background-color` bound to the variable
+  with `update_style`, which binds `var(--…)` correctly) and import with
+  classes only. If it happened: rename each `inline-div-N` to its role and
+  replace its value with the bound property.
+- Status: workaround confirmed
+- Found by: claude
+
+### 2026-10-09 · API-uploaded assets stay size 0 and don't render in components
+- Area: mcp
+- Symptom: images uploaded through the assets API (presigned S3 upload,
+  201 returned, the CDN served the right bytes) and set on component
+  image props showed the component's default image on the canvas and the
+  published page. `get_asset` reported size 0 and no variants.
+- Cause: Webflow never finished processing the upload, so the asset has
+  no variants and the Designer falls back to the default.
+- Fix: don't rely on API uploads for images used in the Designer. Replace
+  an existing asset in the Designer (Assets panel › Replace), which keeps
+  its id and every usage, or bring images in through a CMS image field
+  (next entry). Check `get_asset` size and variants after any upload.
+- Status: open
+- Found by: claude
+
+### 2026-10-09 · CMS image fields re-host an image from a public URL
+- Area: mcp
+- Symptom: images needed to get into the CMS (and rich-text bodies)
+  without the assets API (see the entry above).
+- Cause: —
+- Fix: set the image field (or the rich-text `<img src>`) to a public URL;
+  Webflow fetches the file and copies it to its own CDN. Host the files
+  temporarily (any public static host), write the items, read them back
+  and check every URL is now on the Webflow CDN, then delete the
+  temporary host. Alt text goes on the image field.
+- Status: workaround confirmed
+- Found by: claude
+
+### 2026-10-09 · A box-shadow with a variable can't be set through the API
+- Area: mcp
+- Symptom: a focus ring's inner band `box-shadow: 0 0 0 2px var(--…)`
+  stored as a plain binding to the colour variable (no shadow), as the
+  "Style values containing `var()`" entry describes.
+- Cause: the style API replaces any value that contains a Webflow variable
+  with a binding to that variable.
+- Fix: set the shadow through the API with the variable's literal value
+  (`0 0 0 2px #1a1aff`), then rebind the colour to the variable in the
+  Designer (shadow colour › variable picker). List those rebinds as
+  manual steps.
+- Status: workaround confirmed
+- Found by: claude
+
+### 2026-10-13 · WHTML import with `css` creates the classes too
+- Area: mcp
+- Symptom: creating ~50 classes one `create_style` call at a time is slow,
+  and each needs longhand properties written out.
+- Cause: none; the importer has a second input that was not in use.
+- Fix: pass the rules as the WHTML builder's `css`. It creates every class
+  in that CSS (used in the markup or not) with longhand properties, hover
+  states, combos and the three max-width breakpoints. What it can't take:
+  `var()` and `calc()` with variables (use plain values, then bind
+  variables with `update_style`), `rgb(r g b / a)` (write `rgba()`), a
+  font stack (only the first family is kept, with a "missing font"
+  warning).
+  Classes are named by their slug (`sg-row-meta`): rename each one
+  afterwards (`rename_style`), which keeps the selector.
+- Status: workaround confirmed
+- Found by: claude
+
+### 2026-10-13 · `id="forms"` is dropped; an element without an id can't be a link target
+- Area: mcp
+- Symptom: a section imported with `id="forms"` came in with no id (twice),
+  `set_attributes` `id` failed with "An internal error occurred", and
+  `set_link` (type element) to that section failed the same way. Every
+  other section kept its id and linked fine.
+- Cause: Webflow refuses `forms` as an element id (most likely because it
+  shadows `document.forms`); `set_link` needs the target to have an id.
+- Fix: use another id (`form-elements`). When `set_link` to an element
+  fails with an internal error, check the target's id first.
+- Status: workaround confirmed
+- Found by: claude
+
+### 2026-10-13 · No reorder for variables: swap names and values instead
+- Area: mcp
+- Symptom: six weights added to a group appeared after the three older
+  ones (Regular, Medium, Bold, Thin, Extra Light…); the API can only
+  reorder collections.
+- Cause: a variable keeps the position it was created in.
+- Fix: treat the positions as slots. Rename the slots to temporary names,
+  give each slot the value and name it should have in order, and re-point
+  what referenced the old slots (aliases with `existing_variable_id`,
+  classes with `variable_as_value`) at the slot that now holds that value.
+  Updating an alias without `mode_id` also updates the modes that follow
+  the base. Read the published CSS afterwards. In the Designer the same
+  job is a drag.
+- Status: workaround confirmed
+- Found by: claude
+
+### 2026-10-13 · A collection's modes do nothing until a style sets them
+- Area: mcp
+- Symptom: the Layout variables had Tablet and Mobile values, but the
+  published CSS declared each variable once: nothing changed with the
+  breakpoint. The type roles did change.
+- Cause: only Typography Role had its mode set on the Body tag style at
+  each breakpoint; Layout had none (and no breakpoint auto-mode).
+- Fix: `set_style_variable_mode` on `body` with `breakpoint_id` medium,
+  small and tiny, once per responsive collection. Check with
+  `get_style_variable_modes`, then count the variable's declarations in
+  the published CSS (one per mode).
+- Status: fixed in the starter site
+- Found by: human
+
+### 2026-10-13 · The Current state can be written, but only on a new class
+- Area: mcp
+- Symptom: the style tool's states stop at hover, focus and the like; there
+  is no Current. A sidebar link had no way to show the section in view.
+- Cause: the style tool doesn't expose the state; the WHTML importer does.
+- Fix: import an element with `css` holding `.the-class.w--current { … }`:
+  it is stored as the Current state (published as `.the-class.w--current`),
+  at breakpoints too. The style tool can't read it back; check the
+  published CSS. For a class that **already exists** the importer does not
+  add to it: it creates `the-class-1`. So import the full class under a
+  new name with the state in it, move the elements over with `set_style`,
+  remove the old class, and rename the new one to the old name (the
+  selector follows the name).
+- Status: workaround confirmed
+- Found by: human + claude
+
+### 2026-10-13 · Sitemap exclusion is plan-gated; site SEO settings have no API
+- Area: mcp
+- Symptom: `update_page_sitemap_status` and `list_pages_sitemap_status`
+  answer 403 "Site plan doesn't support sitemap indexing controls" on a
+  site without a site plan, also after Auto-generate sitemap is turned on.
+  No tool reads or writes Site settings › SEO.
+- Cause: plan gate; the settings page is dashboard-only.
+- Fix: turn Auto-generate sitemap on in the dashboard (a person, or a
+  browser session with their OK). Keep internal pages out of search with
+  `noindex` in their head code until the plan exists, then exclude them
+  from the sitemap. Staging with subdomain indexing off serves
+  `Disallow: /` whatever the sitemap lists.
+- Status: open
+- Found by: claude
+
+### 2026-10-13 · Building nested components through the MCP: what works
+- Area: mcp
+- Symptom: a four-layer button (link › colour › size › content) with an
+  icon component inside had to be built without the Designer.
+- Cause: none; this records the route that worked.
+- Fix: build bottom-up. For each layer: build the wrapper element, insert
+  the inner component as an instance, `transform_element_to_component`,
+  `create_prop` the pass-through props, then bind the inner instance's
+  props with `set_component_instance_prop_values` (`type: "bindable"`,
+  `binding_source_type: "prop"`) inside `scope_component_id`. Inside a
+  new component the root keeps the component's id and its children count
+  up from it. Also confirmed: a custom `class` attribute bound to a text
+  prop (an icon font's classes); an attribute *name* bound to a prop;
+  `visibility` and a Link Block's `link` bound to props; a variant set on
+  an instance by passing the variant id as a string to its Variant prop.
+  Not possible: exposing a nested instance's Variant as a prop of the
+  outer component (a Designer step, "Link to new prop").
+- Status: workaround confirmed
+- Found by: claude
+
+### 2026-10-13 · `set_text` fails on imported blocks; a property can't be removed and set in one update
+- Area: mcp
+- Symptom: `set_text` on a div that the WHTML importer made from
+  `<div>text</div>` answered "This element doesn't support text".
+  Separately, an `update_style` that listed `padding-right` in both
+  `remove_properties` and `properties` left the property unset.
+- Cause: the element is a Block with a text child, not a Text Block; in
+  one update the removal is applied after the write.
+- Fix: write the text with `set_settings`, key `text`
+  (`static_text`), which also accepts a prop binding. Remove a property in
+  one call and set it in the next.
+- Status: workaround confirmed
+- Found by: claude
+

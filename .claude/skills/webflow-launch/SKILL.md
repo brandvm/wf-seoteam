@@ -83,6 +83,10 @@ SEO and tracking
   save --live`, every page in `pages`) and commit them.
 - [Claude] Apply the 301 redirects; [Claude checks] the top old URLs
   redirect correctly.
+- [Claude checks] `sitemap.xml` exists (Site settings › SEO ›
+  Auto-generate sitemap) and does **not** list `/design/style-guide` or
+  `/design/media`: exclude both through the sitemap tool once the site
+  plan is on (it answers 403 before that).
 - [Person] Submit sitemap.xml in Search Console.
 - [Person] Submit a form on the live site and see the visit in analytics.
 
@@ -109,5 +113,5 @@ All [Person], Claude can prepare the documents:
 - [Claude] Before every later release: `pnpm wf:baseline compare --live`
   after publishing to staging; every change is expected or fixed.
 - [Claude] Offer the project's new `template-candidate` GOTCHAS to the
-  template (webflow-build › Contributing); the template collects them with
+  template (webflow-build › rules.md › Contributing); the template collects them with
   `pnpm harvest`.

@@ -6,6 +6,19 @@ Harvested from client builds made from this template (`Scope:
 template-candidate` entries in their `GOTCHAS.md`). Module and file names
 refer to the project the lesson came from; Status is that project's.
 
+### 2026-10-09 · Measure preloads; font preloads can make it worse
+- Area: css, perf
+- Symptom: font preloads for the heading and body fonts (both
+  `font-display: swap`) were expected to help LCP.
+- Cause: they compete with the render-blocking CSS for bandwidth.
+- Fix: A/B by injecting the `<link>`s into production HTML with Playwright
+  route interception (7 runs, median, 4× CPU, slow 4G): fonts gave
+  −20–40 ms LCP but +30–100 ms FCP, so they were dropped; an image preload
+  for a lazy LCP hero image gave −420 ms on one page and nothing on others
+  (a 5 KB SVG; a hero hidden behind IX3). Keep only measured wins.
+- Status: done
+- Found by: claude
+
 ### 2026-10-05 · Horizontal scrollers drag vertically
 - Area: css
 - Symptom: Slider Track could be dragged up and down while scrolling.
@@ -102,3 +115,35 @@ refer to the project the lesson came from; Status is that project's.
   needed, log it here so renames get checked.
 - Status: fixed in the template — the template no longer references Webflow variable names; the AGENTS.md policy forbids new ones without approval
 - Found by: human
+
+### 2026-10-09 · Prototype generators lose large breakpoints and `.w--` states
+- Area: css
+- Symptom: with a snapshot of an existing site in the prototype starter:
+  styles at Webflow's `large` / `xl` / `xxl` breakpoints (min-width 1280 /
+  1440 / 1920) were missing; Current and custom radio Checked / Focused
+  came out as invalid pseudo-classes (`:current`); the style guide's
+  swatch grids were one column wide, a pill radius in Spacing drew a bar
+  wider than the page, full-viewport classes made 100vh library tiles, and
+  `gen-style-guide.mjs` crashed on a class slug with `---`.
+- Cause: the generators assumed the starter site's snapshot (four
+  breakpoints, no class states, a Radius collection, small values).
+- Fix: `gen-webflow-css.mjs` emits min-width blocks and `.w--current` /
+  `.w--redirected-checked` / `.w--redirected-focus`; `gen-style-guide.mjs`
+  stretches `.sg-grid`, caps `.sg-tile` and `.sg-bar`, sends `Radius/`
+  variables to the Radius section, and filters empty slug parts.
+- Status: fixed in the template's prototype starter
+- Found by: claude
+
+### 2026-10-09 · Prototype stand-ins override an existing site's tag styles
+- Area: css
+- Symptom: with a snapshot of an existing site, prototype headings lost
+  their weight, links their colour and images their sizing.
+- Cause: `prototype.css` loads last and carried bare element rules
+  (`h1…p { font-weight: inherit }`, `a { color: inherit }`, `img {…}`),
+  the same specificity as the site's tag styles in the generated
+  `webflow.css`, so they won the tie.
+- Fix: the stand-ins are wrapped in `:where()`, so any tag style in
+  `webflow.css` wins and the stand-ins apply only where the snapshot sets
+  nothing.
+- Status: fixed in the template's prototype starter
+- Found by: claude
