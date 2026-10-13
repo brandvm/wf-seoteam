@@ -47,6 +47,34 @@ submit is a plain Webflow form button. The home sections themselves are
 not built in Webflow yet. The prototype snapshot still needs a refresh so
 `new-classes.css` empties into `webflow.css`.
 
+2026-10-13 — Home is built in Webflow and published to staging: nav and
+footer in their components, the 11 sections in the G | Main slot, 72
+images bound, 28 real `<button>` elements (27 rebuilt from imported
+links, plus the form's submit, rebuilt as a DOM button with its icon
+chip). The loader snippets are installed (MANUAL-TODO D), so staging
+runs the repo bundle. Compared with the prototype at 1680, 1280, 820
+and 390: same page height and the same height for every section, nav
+and footer; no missing class, no broken image; tabs, FAQ, Read more and
+the testimonial slider work. Open: MANUAL-TODO E and F, the prototype
+snapshot refresh, and everything under Open decisions.
+
+2026-10-13 (later) — **New home design.** The client confirmed a new frame:
+Figma page "Confirmed Sections" › frame **new version** `731:2761`
+(1680 wide). The prototype home page is rebuilt from it and is **pending
+approval**; Webflow and staging still show the previous design. What
+changed: the approach and testimonials sections are gone; services is a
+heading block over four tab cards and a photo stage; the AI cards have a
+banner; case cards, industries, research (authors line, four real cards)
+and the contact heading are restyled; the rails sit 80px in (were 60px);
+square corners on cards. Class changes are in
+`prototype/src/css/new-classes-home-v2.css` (A changed, B new, C no longer
+used), variables P15–P17 in `proposed.css`. The prototype style guide page
+is not updated for it yet (`pnpm check:style-guide` lists 26 classes), and
+`pnpm wf:preflight` has 44 items to fix on that page, none on Home. Copy:
+`../Assets/reference/SEO Team Service Pages.rtf` (Home, v3) and the
+keyword map next to it; those cover the service and industry pages too,
+which are not started.
+
 ## Ground rules for this project
 
 - Prototype first (wf-template workflow): the design is built and
@@ -62,14 +90,31 @@ not built in Webflow yet. The prototype snapshot still needs a refresh so
 
 | URL | Design source | Webflow page | Notes |
 | --- | --- | --- | --- |
-| `/` | Figma `638:3521` (desktop only); prototype `index.html` | Home | 5 of 12 sections confirmed |
+| `/` | Figma `731:2761` "new version" (desktop only; was `638:3521`); prototype `index.html` | Home | 9 sections, confirmed by the client 2026-10-13; prototype pending Kajal's approval |
 | `/design/style-guide` | prototype `design/style-guide` (`pnpm style-guide`; hand-written part in `components.html`) | Style guide (folder `design`) | excluded from search; all 172 classes applied (`pnpm check:style-guide`) |
 
 Breakpoints: 991 (tablet), 767 (mobile landscape), 479 (mobile). Checked at
 1680, 820 and 390. Figma has the 1680 desktop frame only; tablet and mobile
 layouts in the prototype are Claude's defaults (Open decisions).
 
-Section map (Figma node → prototype):
+Section map, new frame (screenshots in `../Assets/figma/home-oct13/`):
+
+| Section | Figma | Prototype |
+| --- | --- | --- |
+| Hero, logo strip, stats | `725:834` | `#top`, `section.is-proof` |
+| Services | `746:2951` (other three stages: `746:3127` GEO, `746:3246` paid, `746:3172` marketing) | `#services` |
+| Why SEO Team + AI panel | `726:1867` | `#why` |
+| Case studies | `728:2131` | `#case-studies` |
+| Industries | `731:2660` | `#industries` |
+| Research | `726:1541` | `#research` |
+| FAQ | `726:1590` | `#faq` |
+| Contact | `726:1666` | `#contact` |
+| Footer | `726:1750` | `partials/footer.html` |
+
+Outside the frame, so not built: `728:2109` approach, `741:906`
+testimonials.
+
+Section map of the previous design (Figma node → prototype):
 
 | Section | Figma | Prototype |
 | --- | --- | --- |
@@ -99,7 +144,16 @@ Section map (Figma node → prototype):
 
 | Collection | Fields | Used on |
 | --- | --- | --- |
-| Research (planned) | Name, Slug, Category (option or reference), Summary (plain text), Image (alt on the field), Date, Author/byline ("SEO Team Research") | Home › Research: 4 latest, sorted by date. Needs the designer's OK and an article template design |
+| Research (planned) | Name, Slug, Category (option or reference), Summary (plain text), Image (alt on the field), Date, Author/byline ("SEO Team Research") | Home › Research: 4 latest, sorted by date. Needs an article template design |
+| Services (planned) | Name, Slug, Short name (tab label), Number/sort order, Summary (the card text), Button label, Stage image, plus the service page fields (copy doc) | Home › Services: the four top-level services as tabs and panes; footer; nav dropdown. The tabs module needs the tab and pane ids to pair (bind both to the slug) |
+| Industries (planned) | Name, Slug, Tagline (the tile's second line), Sort order, plus the industry page fields | Home › Industries: 10 tiles; footer (5 + "All Industries") |
+| Case Studies (planned) | Name, Slug, Client, Category (tag), Headline, Featured (switch), Stat, Stat label, Source tag, Challenge / What we did / Result, Photo, Card style (option: dark, light, photo), chart | Home › Case studies: one featured + three cards. The three card visuals (bars, columns, line) differ per card: decide whether they are an image field or fixed per style |
+| FAQs (planned) | Question, Answer (rich text), Sort order, Page or topic (so each page lists its own) | Home › FAQ: 12, in three columns of four (one list, three columns by CSS, or three lists with offset/limit) |
+
+Confirmed by Kajal 2026-10-13: FAQs, articles, services, industries and
+case studies are CMS. The prototype shows them static. Fields above are a
+first proposal from the home page; the service, industry and article page
+designs will add to them.
 
 ## Components to make
 
@@ -193,10 +247,46 @@ Section map (Figma node → prototype):
 - 2026-10-12 · Testimonials: three cards fill the row, on the same grid as
   the three cards below; native scroll-snap, no slider library.
 
+- 2026-10-13 · PageSpeed on staging (Kajal's priority): the loader no longer
+  refetches the stylesheet (see GOTCHAS), the hero image is eager with high
+  fetch priority. Local Lighthouse, with this machine's DNS stall switched
+  off: mobile 96–98 (one 90 straight after a publish), desktop 99–100,
+  0 ms blocking time. Not confirmed on Google's PageSpeed website yet.
+  Possible next steps, not done: Inter subset to Latin (three files of
+  ~100 KB), a metric-matched fallback font, production's wasted staging
+  stylesheet request.
+
+- 2026-10-13 · New home frame, differences kept on purpose (say if any
+  should follow Figma exactly): H1 stays on the type scale at 64px (Figma
+  69px); the services H2 uses D2 56px like every other section (Figma
+  50px); content starts 110px in for every section (Figma varies 110–145);
+  the contact panel keeps the dark hero shader (Figma: a blurred glow
+  image); social icons stay Remix (Figma shows letters); Read more in the
+  hero has a down caret, as the other Read more buttons, because it opens
+  text in place (Figma: a right caret).
+- 2026-10-13 · Service stage images are flattened from the Figma layers
+  (source images from the `.fig`, composed without the white card) at
+  1583px wide; the panel glows take the panel's colour
+  (`data-glow-base`, `data-glow-strength` on the canvas; the repo's
+  `panel-shader.ts` needs the same change when this is built).
+- 2026-10-13 · Read more text comes from the copy doc: the design shows
+  the first sentences, the button opens the rest of the same paragraph.
+- 2026-10-13 · Contact form → HubSpot (Kajal): the designed form stays as
+  built and posts to one HubSpot form through the Forms API from a repo
+  module (no HubSpot embed, so no extra script or styling from HubSpot).
+  Each field's `name` is the HubSpot property's internal name; the
+  prototype uses HubSpot's defaults where they exist (`firstname`,
+  `lastname`, `email`, `phone`, `website`, `city`, `message`). Needed from
+  the HubSpot account: portal ID, form ID, the internal names and option
+  values of the three dropdown properties (services, source, budget), the
+  required fields and the consent wording. Webflow's own form handling is
+  the alternative if submissions should also land in Webflow.
+
 ## Open decisions
 
 | Item | Now | Options |
 | --- | --- | --- |
+| Template 0.3–0.4 changes not taken yet | Skills updated to template master `07a21f1` (0.4.5), new `wf:*` checks and skill links added | Move the prototype style guide to the template's fixed layout; take the template loader's `WFC.setCSS` (this repo has its own fix for the same problem, already installed); the Phosphor icon font (not needed: icons are inline SVG) |
 | Tablet and mobile layouts | Claude's defaults: stacked hero, 2 / 1-column grids, 1-column FAQ, form below contact details | Designer supplies 991 / 767 / 479 frames, or approves the defaults |
 | Nav dropdowns (Services, Industries, Research) | Buttons with a chevron that do nothing | Designer supplies the dropdown panels and their links |
 | Mobile menu | Hamburger opens a dark panel under the bar | Designer supplies a mobile menu design |

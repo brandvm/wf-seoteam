@@ -61,6 +61,7 @@
   /* Underline effect */
   --underline-top: 95%;
   --underline-height: 1px;
+  --underline-rest: 0.3;
   --inline-underline-opacity: 0.48;
 
   /* Loops */
@@ -287,29 +288,29 @@ html.is-loading body {
 
 /* repo-css: designer-cant — @keyframes, pseudo-element effects and opt-in classes paired with JS */
 
+/* Link Underline: two background layers on the link itself, which the
+   browser lays along every line of an inline box, so the line follows a
+   link that wraps: a faint line that is always there (--underline-rest)
+   and a full-strength one that wipes in from the left on hover and out to
+   the right. */
 .link-underline {
-  position: relative;
+  --underline-faint: currentColor;
+  background-image: linear-gradient(currentColor, currentColor), linear-gradient(var(--underline-faint), var(--underline-faint));
+  background-repeat: no-repeat;
+  background-position: 100% calc(100% - 0.06em), 0% calc(100% - 0.06em);
+  background-size: 0% var(--underline-height), 100% var(--underline-height);
+  transition: background-size var(--dur-bbs) var(--ease-bbs);
 }
 
-.link-underline::after {
-  content: "";
-  position: absolute;
-  top: var(--underline-top);
-  left: 0%;
-  height: var(--underline-height);
-  width: 0%;
-  background: currentColor;
-  transition: width var(--dur-bbs) var(--ease-bbs);
+@supports (color: color-mix(in srgb, red, blue)) {
+  .link-underline {
+    --underline-faint: color-mix(in srgb, currentColor calc(var(--underline-rest) * 100%), transparent);
+  }
 }
 
-.link-underline:hover::after {
-  width: 100%;
-}
-
-.link-underline:not(:hover)::after {
-  left: auto;
-  right: 0%;
-  width: 0%;
+.link-underline:hover {
+  background-position: 0% calc(100% - 0.06em), 0% calc(100% - 0.06em);
+  background-size: 100% var(--underline-height), 100% var(--underline-height);
 }
 
 /* Real text-decoration, not a pseudo-element: this is the variant for
@@ -442,7 +443,7 @@ html.is-loading body {
    card's image zooms while the card is hovered. (The title's hover colour
    is on Article Card itself in the Designer; the title inherits it.) */
 .article-card:hover .article-card-img {
-  transform: scale(1.04);
+  transform: scale(1.015);
 }
 
 /* repo-css: designer-cant — gradient border on the hero tag (Figma: cream
@@ -533,6 +534,60 @@ html.is-loading body {
 /* The list indent and the first/last-child margin trims already live in
    §03 — that is where the rest of the Rich Text patching sits, and its
    versions also cover the wrapper div Webflow sometimes nests. */
+
+/* ---- Home, new design (2026-10-13) ---- */
+
+/* repo-css: designer-cant — child styles on parent hover: anywhere on the
+   hero card gives its button the hover look and zooms the image a little. */
+.hero-card:hover .button.is-glass { background-color: var(--_colors---ink-tint--ink-48); }
+.hero-card:hover .hero-card-img { transform: scale(1.03); }
+
+/* repo-css: js-state — the tabs module sets Is Active on the tab; its
+   number and arrow chip follow (a child style on a parent's combo, which
+   the Designer can't hold). */
+.tab-card.is-active .tab-card-number { color: var(--_colors-semantic---text--accent); }
+.tab-card.is-active .tab-card-chip { background-color: var(--_colors---brand--accent); color: var(--_colors---brand--paper); }
+
+/* repo-css: designer-cant — @keyframes, and js-state: the active tab's
+   bar is full; while the tabs module has data-tabs-running="true" on the
+   tabs root it fills over --tabs-auto (the seconds per tab, set by the
+   module), and the module moves on when it ends. */
+@keyframes tab-progress { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+.tab-card.is-active .tab-card-progress { transform: scaleY(1); }
+[data-tabs-running="true"] .tab-card.is-active .tab-card-progress { animation: tab-progress var(--tabs-auto, 8s) linear forwards; }
+
+/* repo-css: designer-cant — @keyframes, and js-state: during a tab change
+   the tabs module puts Is Entering on the new pane and Is Leaving on the
+   old one for 700ms. The new pane's background fades in over the old one
+   while it zooms in very slightly (1 to 1.025); the old card is hidden at once and the new card's
+   content fades in while the module animates its height. */
+@keyframes pane-in { from { opacity: 0; transform: scale(1); } to { opacity: 1; transform: scale(1.025); } }
+.service-pane .s-bg-media { transform: scale(1.025); } /* where the zoom ends, so nothing jumps when the change is over */
+@keyframes pane-text-in { from { opacity: 0; } to { opacity: 1; } }
+.service-pane.is-entering { z-index: 1; }
+.service-pane.is-entering .s-bg-media { animation: pane-in 700ms cubic-bezier(0.4, 0, 0.2, 1) both; }
+.service-pane.is-entering .service-card > * { flex: none; animation: pane-text-in 400ms 150ms ease both; } /* flex none: the card is a column whose height is being animated, and its children (the button) must not be squeezed to fit */
+.service-pane.is-leaving .service-card { visibility: hidden; }
+
+/* repo-css: designer-cant — mask-image: the blur over a photo card fades
+   out towards the right and the bottom instead of ending at an edge. */
+.s-bg-blur { -webkit-mask-image: radial-gradient(ellipse 100% 100% at 0% 0%, #000 35%, transparent 100%); mask-image: radial-gradient(ellipse 100% 100% at 0% 0%, #000 35%, transparent 100%); }
+
+/* repo-css: js-state — charts draw in the first time they are on screen.
+   The charts module arms each [data-chart] (data-chart-armed: its hidden
+   start) and then sets data-in-view; clip-path uncovers a line from the
+   left or columns from the bottom, and a bar grows from its left end. The
+   second bar of a pair starts a little later. */
+[data-chart][data-chart-armed] { clip-path: inset(0 0 0 0); }
+[data-chart][data-in-view] { transition: clip-path 1500ms cubic-bezier(0.4, 0, 0.2, 1), transform 1100ms cubic-bezier(0.4, 0, 0.2, 1); } /* only on the way in, so arming at boot is instant */
+[data-chart="right"][data-chart-armed]:not([data-in-view]) { clip-path: inset(0 100% 0 0); }
+[data-chart="up"][data-chart-armed]:not([data-in-view]) { clip-path: inset(100% 0 0 0); }
+[data-chart="grow"][data-chart-armed] { transform-origin: 0% 50%; }
+[data-chart="grow"][data-chart-armed]:not([data-in-view]) { transform: scaleX(0); }
+.bar.is-accent[data-in-view] { transition-delay: 250ms; }
+[data-chart="columns"][data-chart-armed] rect { transform-box: fill-box; transform-origin: 50% 100%; }
+[data-chart="columns"][data-chart-armed]:not([data-in-view]) rect { transform: scaleY(0); }
+[data-chart="columns"][data-in-view] rect { transition: transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1); } /* each rect's delay is set by the module */
 
 /* ============================================================
    06. UTILITIES
@@ -719,7 +774,7 @@ html.is-loading body {
 
   .image-w img,
   .button-link .icon,
-  .link-underline::after,
+  .link-underline,
   .inline-link-underline,
   .content-rte a {
     transition: none !important;

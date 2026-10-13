@@ -1,6 +1,8 @@
 // Entry point. Keep this file a manifest: one run() call per module.
 // Feature code lives in src/modules/<name>.ts and exports an init
 // function that no-ops when its selector is absent from the page.
+import { initCharts } from './modules/charts';
+import { initCountUp } from './modules/count-up';
 import { initEnvironmentSwitcher } from './modules/environment-switcher';
 import { initFaq } from './modules/faq';
 import { initHeroShader } from './modules/hero-shader';
@@ -33,6 +35,8 @@ function boot() {
   run('tabs', initTabs);
   run('slider', initSlider);
   run('panel-shader', initPanelShader);
+  run('charts', initCharts);
+  run('count-up', initCountUp);
   // Add project feature initializers here: run('<name>', init<Name>);
 }
 

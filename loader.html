@@ -107,9 +107,10 @@ published.
    code the canvas would show blank boxes where every icon should be.
 
    The canvas shows the STAGING stylesheet: push, wait ~1 min, reload
-   the Designer tab. Everywhere else the 2b script rewrites the href
-   (pinned tag on prod, cache-busted staging on webflow.io) and adds
-   the localhost sheet only when the dev flag is on.
+   the Designer tab. On published pages the 2b script points the sheet
+   at the pinned tag on prod; on webflow.io it leaves this link alone
+   (one request, no flash) and swaps in a cache-busted copy after load.
+   It adds the localhost sheet only when the dev flag is on.
 
    There is deliberately no static localhost <link> here. It used to
    let the canvas show unsaved local CSS, but every public visitor's
@@ -148,9 +149,33 @@ published.
     var base = document.getElementById("wfc-css");
     if (!C) return console.error("[wfc] Head code config missing; the stylesheet stays on staging.");
     if (!base) return;
-    // Runs right after 2a, before anything paints, so the staging sheet
-    // never applies on prod — the href is settled before first paint.
-    base.href = C.staging ? C.stag + "styles.css?v=" + Date.now() : C.prod + "styles.css";
+    if (!C.staging && C.prod !== C.stag) {
+      // Production with a pinned release: point the sheet at it. Runs right after 2a,
+      // before anything paints, so the href is settled before first paint.
+      base.href = C.prod + "styles.css";
+    } else {
+      // Staging (webflow.io, or a domain with no release yet): KEEP the
+      // sheet the parser is already fetching. Rewriting the href here
+      // drops that sheet and fetches it a second time before first paint:
+      // a flash of unstyled content, a layout shift when it returns, and a
+      // second render-blocking request. GitHub Pages caches ~10 min, so
+      // after load a cache-busted copy is fetched and swapped in only once
+      // it has arrived; the page is never left without the stylesheet.
+      window.addEventListener("load", function () {
+        var cur = document.getElementById("wfc-css");
+        if (!cur || C.source !== C.stag) return; // dev mode, or a fallback took over
+        var fresh = document.createElement("link");
+        fresh.rel = "stylesheet";
+        fresh.href = C.stag + "styles.css?v=" + Date.now();
+        fresh.onload = function () {
+          if (C.source !== C.stag) return fresh.remove();
+          cur.remove();
+          fresh.id = "wfc-css";
+        };
+        fresh.onerror = function () { fresh.remove(); };
+        cur.parentNode.insertBefore(fresh, cur.nextSibling);
+      });
+    }
     if (C.dev && !document.getElementById("wfc-css-dev")) {
       var dev = document.createElement("link");
       dev.id = "wfc-css-dev";
@@ -185,8 +210,12 @@ Rollback = set RELEASE in piece 1 back to the previous tag and publish.
       if (C.source !== C.devBase) {
         var devCSS = document.getElementById("wfc-css-dev");
         if (devCSS) devCSS.remove();
+        // Re-point the sheet only when the bundle comes from somewhere else
+        // (a fallback), so CSS and JS match. Setting the href to where the
+        // sheet already is would drop it and fetch it again.
         var baseCSS = document.getElementById("wfc-css");
-        if (baseCSS) baseCSS.href = C.source + "styles.css" + new URL(src).search;
+        if (baseCSS && baseCSS.href.indexOf(C.source) !== 0)
+          baseCSS.href = C.source + "styles.css" + new URL(src).search;
       }
       var s = document.createElement("script");
       s.src = src;

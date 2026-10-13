@@ -183,8 +183,9 @@ test('production without a RELEASE serves staging and logs an error', async ({ p
   const requests = [];
   const consoleErrors = [];
   await setup(page, { url: 'https://client.example/', release: null, requests, consoleErrors });
-  // Staging changes on every push, so it is cache-busted like on webflow.io.
-  await expect(page.locator('#wfc-css')).toHaveAttribute('href', new RegExp('^' + stage + 'styles\\.css\\?v=\\d+$'));
+  // Staging changes on every push: the parsed sheet is kept for first paint
+  // and a cache-busted copy replaces it after load, like on webflow.io.
+  await expect(page.locator('#wfc-css')).toHaveAttribute('href', new RegExp('^' + stage + 'styles\\.css\\?v=\\d{6,}$'));
   expect(requests.some(request => request.startsWith(stage + 'index.js'))).toBe(true);
   expect(requests.filter(request => request.includes('cdn.jsdelivr.net/gh/'))).toEqual([]);
   expect(consoleErrors.join('\n')).toContain('RELEASE is not set');
@@ -192,4 +193,26 @@ test('production without a RELEASE serves staging and logs an error', async ({ p
 
 test('the scroll lock is released when the bundle cannot load', async ({ page }) => {
   await setup(page, { url: 'https://client.example/', unavailable: url => url.endsWith('index.js') });
+});
+
+test('staging fetches the stylesheet once before load, then swaps in a fresh copy', async ({ page }) => {
+  // Recorded in the page, in the capture phase, so it runs before the
+  // loader's own load listener starts the refresh.
+  await page.addInitScript(() => window.addEventListener('load', () => {
+    window.sheetsAtLoad = [...document.querySelectorAll('link[rel="stylesheet"]')].map(link => link.getAttribute('href'));
+  }, { capture: true }));
+  const errors = await setup(page);
+  // The href written in the page is still the only sheet at load: no
+  // rewrite, so it is never dropped while the page first paints.
+  expect(await page.evaluate(() => window.sheetsAtLoad)).toEqual([stage + 'styles.css?v=1']);
+  await expect(page.locator('#wfc-css')).toHaveAttribute('href', new RegExp('^' + stage + 'styles\\.css\\?v=\\d{6,}$'));
+  await expect(page.locator('link[rel="stylesheet"]')).toHaveCount(1);
+  expect(errors).toEqual([]);
+});
+
+test('production points the stylesheet at the release and never refetches it', async ({ page }) => {
+  const requests = [];
+  await setup(page, { url: 'https://client.example/', requests });
+  expect(requests.filter(url => url === release + 'styles.css')).toHaveLength(1);
+  expect(requests.filter(url => url.includes('styles.css?v=') && !url.endsWith('?v=1'))).toEqual([]);
 });
