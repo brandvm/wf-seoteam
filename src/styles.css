@@ -674,6 +674,13 @@ html.is-menu-open { overflow: hidden; }
 .nav-panel-card:hover .nav-panel-card-img { transform: scale(1.04); }
 @media (prefers-reduced-motion: reduce) { .nav-panel .nav-panel-inner, .nav-panel-card-img { transition: none; } }
 
+/* ---- About page (2026-10-14) ---- */
+
+/* repo-css: designer-cant — child style on parent hover: the photo in an
+   About card (the Research card is a link) zooms a little while hovered. */
+.about-card:hover .about-card-img { transform: scale(1.03); }
+@media (prefers-reduced-motion: reduce) { .about-card-img { transition: none; } }
+
 /* ---- Service template (2026-10-14) ---- */
 
 /* repo-css: designer-cant — child styles on parent hover, and nth-child:
