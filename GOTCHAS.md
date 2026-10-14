@@ -27,6 +27,27 @@ collected from client repos into those files.
 
 <!-- Add new entries here, newest first. -->
 
+### 2026-10-14 · Getting content into an empty slot, and Designer controls that resist automation
+- Area: designer
+- Scope: template-candidate
+- Symptom / cause / fix:
+  - The API can't insert into an empty component slot, and dragging an
+    element onto the slot's Navigator row is refused ("can't be dragged
+    into component instances outside of slots"). Select the element,
+    Cmd+X, select the slot's row in the Navigator, Cmd+V: it lands in
+    the slot. Build template content in a wrapper at body level, then
+    cut and paste it.
+  - The date format menu in a CMS text binding is a custom list; clicks
+    on its options often miss. Open it and use ArrowDown + Enter
+    (MMMM D, YYYY → three down = MMM D, YYYY), then read the text back.
+  - "Exclude current item" is a filter: field = the collection's own
+    item field (e.g. "Article"), condition "is not", value Current item.
+    It defaults to "is"; re-open the filter and check before closing.
+  - Template SEO title/description: page settings › "+ Add field"
+    inserts a field token; type plain text around it.
+- Status: workaround confirmed
+- Found by: claude
+
 ### 2026-10-14 · Collection List settings: filters fail inside a slot, one key per write
 - Area: mcp
 - Scope: template-candidate

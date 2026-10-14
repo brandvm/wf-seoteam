@@ -160,10 +160,10 @@ test('share links get the network URL for this page; copy writes it to the clipb
 
 test('nav marks the section of the current path', async ({ page }) => {
   await page.route('https://example.test/research/a-study', (route) => route.fulfill({ contentType: 'text/html', body:
-    `<nav><div data-nav-menu><button data-nav-section="/research">Research</button><a data-nav-section="/case-studies" href="#">Cases</a></div><button data-nav-toggle aria-expanded="false">Menu</button></nav>` }));
+    `<nav><div data-nav-menu><button data-nav-section="/research /authors">Research</button><a data-nav-section="/case-studies" href="#">Cases</a></div><button data-nav-toggle aria-expanded="false">Menu</button></nav>` }));
   await page.goto('https://example.test/research/a-study');
   await page.addScriptTag({ content: js });
-  await expect(page.locator('[data-nav-section="/research"]')).toHaveAttribute('aria-current', 'true');
+  await expect(page.locator('[data-nav-section="/research /authors"]')).toHaveAttribute('aria-current', 'true');
   await expect(page.locator('[data-nav-section="/case-studies"]')).not.toHaveAttribute('aria-current', 'true');
 });
 
