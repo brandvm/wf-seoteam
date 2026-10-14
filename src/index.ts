@@ -5,6 +5,7 @@ import { initCharts } from './modules/charts';
 import { initCountUp } from './modules/count-up';
 import { initEnvironmentSwitcher } from './modules/environment-switcher';
 import { initFaq } from './modules/faq';
+import { initFilterAll } from './modules/filter-all';
 import { initFinsweetLoader } from './modules/finsweet-loader';
 import { initHeroShader } from './modules/hero-shader';
 import { initNav } from './modules/nav';
@@ -40,6 +41,7 @@ function boot() {
   run('charts', initCharts);
   run('count-up', initCountUp);
   run('share', initShare);
+  run('filter-all', initFilterAll);
   // Last: Finsweet starts after the other modules have set their attributes.
   run('finsweet-loader', initFinsweetLoader);
   // Add project feature initializers here: run('<name>', init<Name>);

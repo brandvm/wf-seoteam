@@ -186,3 +186,18 @@ test('the Finsweet loader lists every bundled attribute and adds fs-bundle.js on
     if (expected) await expect(page.locator('script[data-fs-bundle]')).toHaveAttribute('src', 'https://example.test/dist/fs-bundle.js?v=7');
   }
 });
+
+test('the All chip is active only while no topic is chosen', async ({ page }) => {
+  await page.setContent(`<style>${css}</style><form fs-list-element="filters">
+    <label class="chip is-active" data-filter-all="is-active">All</label>
+    <label class="chip"><input type="radio" name="topic" value="a">A</label>
+    <label class="chip"><input type="radio" name="topic" value="b">B</label></form>`);
+  await page.addScriptTag({ content: js });
+  const all = page.locator('[data-filter-all]');
+  await expect(all).toHaveClass(/is-active/);
+  await page.locator('input[value="a"]').check();
+  await expect(all).not.toHaveClass(/is-active/);
+  await page.evaluate(() => { document.querySelector('input[value="a"]').checked = false; });
+  await all.click();
+  await expect(all).toHaveClass(/is-active/);
+});
