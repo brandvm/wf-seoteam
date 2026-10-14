@@ -27,6 +27,26 @@ collected from client repos into those files.
 
 <!-- Add new entries here, newest first. -->
 
+### 2026-10-14 · An imported combo published as a bare class; shared hiding on a shared combo
+- Area: mcp
+- Scope: template-candidate
+- Symptom: on the author page the photo tags were 19.5px instead of 13px;
+  on phones the article's "Get My Free Assessment" and "Subscribe" buttons
+  were missing.
+- Cause: (1) the WHTML importer created `.post-card-title.is-small` while
+  other "Is Small" combos existed; Webflow published its properties as a
+  bare `.is-small { font-size: 24px … }`, so every element carrying an
+  `is-small` combo (buttons, badges, icons, card media) got them. The style
+  API still reported the selector as `.post-card-title.is-small`.
+  (2) Button › Is Small had `display: none` at 479 to hide the nav's Get
+  a Quote, which hid every small button on phones.
+- Fix: renamed the imported combo (Is Compact Title) so it publishes under
+  its own class; moved the phone hiding to a Nav Quote combo on the nav
+  button only. After an import, grep the published CSS for bare `.is-…`
+  rules. Never hide a shared combo to hide one instance.
+- Status: fixed (Webflow, 2026-10-14)
+- Found by: claude
+
 ### 2026-10-14 · Getting content into an empty slot, and Designer controls that resist automation
 - Area: designer
 - Scope: template-candidate
