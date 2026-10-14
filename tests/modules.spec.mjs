@@ -89,7 +89,7 @@ test('tabs switch panels, mark the active tab and follow the arrow keys', async 
 test('tabs and panels from CMS lists pair by position, get ids and numbers', async ({ page }) => {
   // Two Collection Lists: no ids, no aria-controls, every panel visible.
   await page.setContent(`<div data-tabs>
-    <div class="w-dyn-items">${[1, 2, 3].map((n) => `<div class="w-dyn-item"><button type="button" data-tabs-tab><span data-tabs-number></span>Tab ${n}</button></div>`).join('')}</div>
+    <div class="w-dyn-items" role="list">${[1, 2, 3].map((n) => `<div class="w-dyn-item" role="listitem"><button type="button" data-tabs-tab><span data-tabs-number></span>Tab ${n}</button></div>`).join('')}</div>
     <div class="w-dyn-items">${[1, 2, 3].map((n) => `<div class="w-dyn-item"><div data-tabs-panel><span data-tabs-step></span>Panel ${n}</div></div>`).join('')}</div></div>`);
   await page.addScriptTag({ content: js });
   const tabs = page.locator('[data-tabs-tab]');
@@ -101,6 +101,7 @@ test('tabs and panels from CMS lists pair by position, get ids and numbers', asy
   await expect(panels.nth(1)).toBeHidden();
   const controls = await tabs.nth(1).getAttribute('aria-controls');
   expect(controls).toBe(await panels.nth(1).getAttribute('id'));
+  await expect(page.locator('[role="tablist"] [role="presentation"] [role="tab"]')).toHaveCount(3);
   await tabs.nth(2).click();
   await expect(panels.nth(2)).toBeVisible();
   await expect(panels.nth(0)).toBeHidden();

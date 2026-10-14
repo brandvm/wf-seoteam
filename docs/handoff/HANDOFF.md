@@ -94,6 +94,17 @@ Lighthouse on staging after that, local, DNS stall off: mobile 94–95,
 desktop 99. The nav wrapper is `position: fixed` (Kajal). Open: MANUAL-TODO
 E–K; the prototype's Webflow snapshot still needs a refresh.
 
+2026-10-14 — **Home runs on the CMS.** Collections Services (services and
+industries, 22 items), Case Studies (4), Research (4) and FAQs (12); the
+Home lists are bound to them: 4 service tabs and panes, 1 featured case
+and 3 cards (one of three card designs per item by Card Style), 10
+industry tiles, the 4 latest articles, 12 FAQs. Every card links to its
+item page (`/services/…`, `/case-studies/…`, `/research/…`; the template
+pages are not designed yet). Published to staging and checked at 1680
+and 390: links, dates ("Sep 8, 2026"), count-ups, charts, no broken
+image. The tabs and FAQ modules pair by position, so CMS markup needs no
+ids.
+
 ## Ground rules for this project
 
 - Prototype first (wf-template workflow): the design is built and

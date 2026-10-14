@@ -32,6 +32,16 @@ export function initTabs() {
     // gets the n-th [data-tabs-panel], and the module writes the ids and the
     // ARIA links itself. [data-tabs-number] in a tab and [data-tabs-step] in
     // a panel are filled with the position (01, 02… and 1, 2…).
+    // A CMS list publishes role="list" / "listitem" on its wrappers, which
+    // hides the tabs from assistive tech as tabs: the list becomes the
+    // tablist and its items presentation.
+    const list = tabs[0].closest<HTMLElement>('[role="tablist"], [role="list"]');
+    if (list && root.contains(list)) {
+      list.setAttribute('role', 'tablist');
+      tabs.forEach((tab) => {
+        for (let el = tab.parentElement; el && el !== list; el = el.parentElement) if (el.getAttribute('role') === 'listitem') el.setAttribute('role', 'presentation');
+      });
+    }
     const loose = Array.from(root.querySelectorAll<HTMLElement>('[data-tabs-panel]'));
     const base = root.id || `tabs-${Array.from(document.querySelectorAll('[data-tabs]')).indexOf(root) + 1}`;
     const panels = tabs.map((tab, i) => {

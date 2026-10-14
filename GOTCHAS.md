@@ -27,6 +27,30 @@ collected from client repos into those files.
 
 <!-- Add new entries here, newest first. -->
 
+### 2026-10-14 · Binding the Home lists to the CMS: what the API and importer do
+- Area: mcp
+- Scope: template-candidate
+- Symptom / cause / fix:
+  - A text Span made by the importer can't be bound to a field; build
+    the element as a builder `span` (DOM element) and bind that.
+  - Connect the Collection List to its collection before adding
+    elements inside it, and bind after the structure is built.
+  - Webflow writes `role="list"` / `role="listitem"` on `w-dyn-items`
+    and `w-dyn-item`, over a custom `role="tablist"`. The tabs module
+    now resets them (tablist on the list, `presentation` on the items).
+  - Conditional visibility can be bound through the API only to switch
+    fields; an option field (Card Style) is a Designer step, and so is a
+    link to the current item and a date format.
+  - Imported links carry a custom attribute `href=#`. After pointing a
+    link at the current item in the Designer, delete that attribute or
+    it can override the link.
+  - Several card variants per item (one per style, shown by conditional
+    visibility) stack in the canvas until visibility is set; with
+    `height: 100%` on the card they overlap the next section and can't
+    be clicked. Set visibility first, then the links.
+- Status: fixed (Home, 2026-10-14)
+- Found by: claude
+
 ### 2026-10-14 · Form labels published `for=""`, linked to nothing
 - Area: mcp
 - Scope: template-candidate
