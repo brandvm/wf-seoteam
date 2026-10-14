@@ -201,3 +201,28 @@ test('the All chip is active only while no topic is chosen', async ({ page }) =>
   await all.click();
   await expect(all).toHaveClass(/is-active/);
 });
+
+test('mobile menu opens as a dialog, locks scroll, keeps focus inside and closes on Escape', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 800 });
+  await page.setContent(`<style>${css}</style><div class="g-nav-w"><nav><button type="button" aria-expanded="false" data-nav-toggle>Menu</button></nav>
+    <div class="mobile-menu" role="dialog" aria-modal="true" data-mobile-menu hidden>
+      <button type="button" data-nav-close>Close</button><a href="#a">A</a><a href="#b">B</a></div></div>`);
+  await page.addScriptTag({ content: js });
+  const toggle = page.locator('[data-nav-toggle]');
+  const menu = page.locator('[data-mobile-menu]');
+  await toggle.click();
+  await expect(menu).toBeVisible();
+  await expect(menu).toHaveClass(/is-open/);
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('html')).toHaveClass(/is-menu-open/);
+  await expect(page.locator('[data-nav-close]')).toBeFocused();
+  await page.keyboard.press('Shift+Tab');
+  await expect(page.locator('a[href="#b"]')).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(menu).toBeHidden();
+  await expect(page.locator('html')).not.toHaveClass(/is-menu-open/);
+  await expect(toggle).toBeFocused();
+  await toggle.click();
+  await page.locator('a[href="#a"]').click();
+  await expect(menu).toBeHidden();
+});
