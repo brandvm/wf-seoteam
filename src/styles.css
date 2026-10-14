@@ -627,7 +627,7 @@ html.is-loading body {
 .article-body :where(ul, ol) { margin-top: 0; margin-bottom: 1.25em; padding-left: 1.25em; }
 .article-body :where(li) { margin-bottom: 0.4em; padding-left: 0.25em; }
 .article-body :where(blockquote) { margin: 1.75em 0; padding: 0.25em 0 0.25em 1.25em; border-left: 2px solid var(--_colors-semantic---text--accent); color: var(--_colors-semantic---text--primary); font-size: 1.25em; line-height: 1.45; letter-spacing: -0.02em; }
-.article-body figure { margin-top: 1.25em; margin-bottom: 2em; } /* 0-1-1: beats §03's .w-richtext figure reset */
+.article-body figure { width: 100%; max-width: 100%; margin-top: 1.25em; margin-bottom: 2em; } /* 0-1-1, later: beats §03's figure reset and Webflow's 60% figure width */
 .article-body :where(figcaption) { margin-top: 0.75em; color: var(--_colors-semantic---text--muted); font-size: 0.8125em; line-height: 1.4; text-align: left; }
 .author-bio :where(p) { margin-bottom: 0; }
 

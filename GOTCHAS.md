@@ -27,6 +27,28 @@ collected from client repos into those files.
 
 <!-- Add new entries here, newest first. -->
 
+### 2026-10-14 · Collection List settings: filters fail inside a slot, one key per write
+- Area: mcp
+- Scope: template-candidate
+- Symptom: building the Research page lists, `filters` writes on a
+  Collection List inside the G | Main slot either reported "applied" and
+  read back empty, or failed with "[Conflict] The operation could not be
+  applied to the component map"; one combined write (filters + sort +
+  limit) left that list refusing every later write.
+- Cause: unconfirmed; the same write on a list outside the slot works.
+- Fix: build the Collection List at body level, write `source`, then
+  `filters`, `sort`, `limit`, `pagination` in separate `set_settings`
+  calls (one key each), fill and bind the item, then `move_element` the
+  list into the slot (ids, settings and bindings are kept). A filter
+  "Author Profile = current item" or "exclude current item" has no API
+  value shape that works: Designer step. Also: the element builder can't
+  bind a CMS field at creation ("not inside a CMS context"); create, then
+  bind. Reference fields bind as `<refFieldId>:::<targetFieldId>`.
+  `set_attributes` `for` on a Form Label reported success but did not
+  persist here; `set_settings` key `attributes` did.
+- Status: workaround confirmed (Research page, 2026-10-14)
+- Found by: claude
+
 ### 2026-10-14 · A grid class without rows shows Webflow's 2-row default
 - Area: designer
 - Scope: template-candidate
