@@ -1,7 +1,15 @@
 // Nav: [data-nav-toggle] opens and closes the menu below 992px by toggling
 // .is-open on the nav (repo-css js-state). Escape and a link click close
-// it; resizing past the breakpoint resets it.
+// it; resizing past the breakpoint resets it. [data-nav-section="/research"]
+// on a nav item gets aria-current="true" on pages under that path, so the
+// section in view is marked (repo-css js-state).
 export function initNav() {
+  const path = location.pathname.replace(/\/$/, '');
+  document.querySelectorAll<HTMLElement>('[data-nav-section]').forEach((item) => {
+    const base = (item.dataset.navSection || '').replace(/\/$/, '');
+    if (base && (path === base || path.startsWith(`${base}/`))) item.setAttribute('aria-current', 'true');
+  });
+
   const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
   const nav = toggle?.closest('nav');
   const menu = document.querySelector<HTMLElement>('[data-nav-menu]');

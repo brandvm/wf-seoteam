@@ -141,3 +141,48 @@ test('modules do nothing on a page without their markup', async ({ page }) => {
   await page.addScriptTag({ content: js });
   expect(errors).toEqual([]);
 });
+
+test('share links get the network URL for this page; copy writes it to the clipboard', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: 'https://example.test' });
+  await page.route('https://example.test/research/a-study', (route) => route.fulfill({ contentType: 'text/html', body: `<title>A study</title>
+    <a href="#" data-share="linkedin">in</a><a href="#" data-share="x">x</a><a href="#" data-share="facebook">f</a>
+    <button type="button" data-share="copy" aria-label="Copy link">copy</button>` }));
+  await page.goto('https://example.test/research/a-study');
+  await page.addScriptTag({ content: js });
+  const url = encodeURIComponent(await page.evaluate(() => location.origin + location.pathname));
+  await expect(page.locator('[data-share="linkedin"]')).toHaveAttribute('href', `https://www.linkedin.com/sharing/share-offsite/?url=${url}`);
+  await expect(page.locator('[data-share="x"]')).toHaveAttribute('href', new RegExp('^https://twitter.com/intent/tweet\\?url='));
+  await expect(page.locator('[data-share="facebook"]')).toHaveAttribute('target', '_blank');
+  await page.locator('[data-share="copy"]').click();
+  await expect(page.locator('[data-share="copy"]')).toHaveAttribute('aria-label', 'Link copied');
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('https://example.test/research/a-study');
+});
+
+test('nav marks the section of the current path', async ({ page }) => {
+  await page.route('https://example.test/research/a-study', (route) => route.fulfill({ contentType: 'text/html', body:
+    `<nav><div data-nav-menu><button data-nav-section="/research">Research</button><a data-nav-section="/case-studies" href="#">Cases</a></div><button data-nav-toggle aria-expanded="false">Menu</button></nav>` }));
+  await page.goto('https://example.test/research/a-study');
+  await page.addScriptTag({ content: js });
+  await expect(page.locator('[data-nav-section="/research"]')).toHaveAttribute('aria-current', 'true');
+  await expect(page.locator('[data-nav-section="/case-studies"]')).not.toHaveAttribute('aria-current', 'true');
+});
+
+test('the Finsweet loader lists every bundled attribute and adds fs-bundle.js only where they are used', async ({ page }) => {
+  const registry = readFileSync(new URL('../src/modules/finsweet-registry.ts', import.meta.url), 'utf8');
+  const loader = readFileSync(new URL('../src/modules/finsweet-loader.ts', import.meta.url), 'utf8');
+  const bundled = [...registry.matchAll(/^\s+(\w+): \(\) => import/gm)].map((m) => m[1]).sort();
+  const listed = JSON.parse(loader.match(/NAMES = (\[[^\]]*\])/)[1].replace(/'/g, '"')).sort();
+  expect(listed).toEqual(bundled);
+  await page.route('https://example.test/**', (route) => {
+    const path = new URL(route.request().url()).pathname;
+    if (path.endsWith('index.js')) return route.fulfill({ contentType: 'text/javascript', body: js });
+    if (path.endsWith('fs-bundle.js')) return route.fulfill({ contentType: 'text/javascript', body: '' });
+    return route.fulfill({ contentType: 'text/html', body: path === '/list' ? '<div fs-list-element="list"></div>' : '<p>Plain</p>' });
+  });
+  for (const [path, expected] of [['/plain', 0], ['/list', 1]]) {
+    await page.goto(`https://example.test${path}`);
+    await page.addScriptTag({ url: 'https://example.test/dist/index.js?v=7' });
+    await expect(page.locator('script[data-fs-bundle]')).toHaveCount(expected);
+    if (expected) await expect(page.locator('script[data-fs-bundle]')).toHaveAttribute('src', 'https://example.test/dist/fs-bundle.js?v=7');
+  }
+});

@@ -27,6 +27,26 @@ collected from client repos into those files.
 
 <!-- Add new entries here, newest first. -->
 
+### 2026-10-14 · A grid class without rows shows Webflow's 2-row default
+- Area: designer
+- Scope: template-candidate
+- Symptom: Kajal saw "2 rows" on grids in the Designer that were
+  created through the API with columns only.
+- Cause: the published CSS was fine (no `grid-template-rows`, so rows
+  are implicit), but the Designer's grid panel shows its own default
+  (`.w-layout-grid`: `1fr 1fr` / `auto auto`) where a value is missing,
+  and writes it as soon as someone edits the grid.
+- Fix: every grid class gets both `grid-template-columns` and
+  `grid-template-rows` explicitly; rows `auto` where the grid just
+  flows (extra rows stay implicit and auto, so nothing moves). Set on
+  Pillar Grid, Rail Layout, Service Layout, Service Stage, AI Grid,
+  Case Facts, Proof Grid, Case Grid, Stat Card, Case Feature, Industry
+  Grid, and Tab List at 991. Home section heights unchanged at 1680,
+  820 and 390. Check with a query for `display: grid` styles without
+  `grid-template-rows`.
+- Status: fixed (Webflow, 2026-10-14)
+- Found by: human
+
 ### 2026-10-14 · Binding the Home lists to the CMS: what the API and importer do
 - Area: mcp
 - Scope: template-candidate

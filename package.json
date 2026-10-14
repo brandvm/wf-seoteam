@@ -22,12 +22,16 @@
     "wf:preflight": "node .claude/skills/webflow-build/scripts/preflight.mjs",
     "wf:styles": "node .claude/skills/webflow-build/scripts/styles.mjs",
     "wf:html": "node .claude/skills/webflow-build/scripts/html.mjs",
-    "wf:perf": "node .claude/skills/webflow-build/scripts/perf.mjs"
+    "wf:perf": "node .claude/skills/webflow-build/scripts/perf.mjs",
+    "finsweet": "node scripts/finsweet.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
     "axe-core": "4.10.3",
     "esbuild": "^0.28.2",
     "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@finsweet/attributes": "2.7.1"
   }
 }

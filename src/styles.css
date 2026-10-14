@@ -598,6 +598,44 @@ html.is-loading body {
 [data-chart="columns"][data-chart-armed]:not([data-in-view]) rect { transform: scaleY(0); }
 [data-chart="columns"][data-in-view] rect { transition: transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1); } /* each rect's delay is set by the module */
 
+/* ---- Research, article and author pages (2026-10-14) ---- */
+
+/* repo-css: designer-cant — child styles on parent hover: a post card's
+   title turns accent and its photo zooms a little while the card is
+   hovered (the summary and byline keep their colours, so the card's own
+   colour can't carry it, as Article Card does). */
+.post-feature:hover .post-feature-title,
+.post-row:hover .post-row-title,
+.post-card:hover .post-card-title,
+.mini-post:hover .mini-post-title { color: var(--_colors-semantic---text--accent); }
+.post-feature:hover .post-media-img,
+.post-row:hover .post-media-img,
+.post-card:hover .post-media-img { transform: scale(1.015); }
+
+/* repo-css: designer-cant — the tags inside a CMS Rich Text (Article Body
+   on the article template, Author Bio): nothing to hang a class on (see the
+   prose note in §03). The Article Body class itself (size, colour, line
+   height) is a Designer class. Inner selectors in :where() keep each rule
+   at 0-1-0. Values follow Figma 775:1632. */
+.article-body :where(p) { margin-top: 0; margin-bottom: 1.25em; }
+.article-body :where(h2, h3, h4) { color: var(--_colors-semantic---text--primary); font-weight: var(--_typography-scale---weight--medium); }
+.article-body :where(h2) { margin-top: 2em; margin-bottom: 0.75em; font-size: 1.625em; line-height: 1.23; letter-spacing: -0.03em; }
+.article-body :where(h3) { margin-top: 1.75em; margin-bottom: 0.6em; font-size: 1.25em; line-height: 1.3; letter-spacing: -0.02em; }
+.article-body :where(h4) { margin-top: 1.5em; margin-bottom: 0.5em; font-size: 1.0625em; line-height: 1.35; letter-spacing: -0.01em; }
+.article-body :where(a) { color: var(--_colors-semantic---text--accent); text-decoration: underline; text-underline-offset: 0.15em; }
+.article-body :where(strong) { color: var(--_colors-semantic---text--primary); font-weight: var(--_typography-scale---weight--semibold); }
+.article-body :where(ul, ol) { margin-top: 0; margin-bottom: 1.25em; padding-left: 1.25em; }
+.article-body :where(li) { margin-bottom: 0.4em; padding-left: 0.25em; }
+.article-body :where(blockquote) { margin: 1.75em 0; padding: 0.25em 0 0.25em 1.25em; border-left: 2px solid var(--_colors-semantic---text--accent); color: var(--_colors-semantic---text--primary); font-size: 1.25em; line-height: 1.45; letter-spacing: -0.02em; }
+.article-body figure { margin-top: 1.25em; margin-bottom: 2em; } /* 0-1-1: beats §03's .w-richtext figure reset */
+.article-body :where(figcaption) { margin-top: 0.75em; color: var(--_colors-semantic---text--muted); font-size: 0.8125em; line-height: 1.4; text-align: left; }
+.author-bio :where(p) { margin-bottom: 0; }
+
+/* repo-css: js-state — src/modules/nav.ts sets aria-current on the nav
+   item whose data-nav-section matches the page path (Research on
+   /research/…). */
+.nav-link[aria-current] { color: var(--_colors-semantic---text--accent); }
+
 /* ============================================================
    06. UTILITIES
    ============================================================ */
