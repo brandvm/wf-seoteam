@@ -25,6 +25,23 @@ collected from client repos into those files.
 
 ## This project
 
+### 2026-10-14 · The importer drops a section id and a link's new-tab target
+- Area: mcp
+- Scope: template-candidate
+- Symptom: on the About page the Location section published without
+  `id="location"`, and the Brand Vision and Get Directions links opened
+  in the same tab.
+- Cause: the WHTML importer kept other ids but dropped this one (as it
+  did `forms`, MANUAL-TODO E), and it turns `target="_blank"` and `rel`
+  into custom attributes next to its own `href` attribute instead of
+  link settings.
+- Fix: after an import, read back every section id and set missing ones
+  with `set_dom_id`; set new-tab links through `set_settings` key `link`
+  (`static_link` with `open_in_new_tab`) and remove the custom `href`,
+  `target` and `rel` attributes the importer left.
+- Status: fixed (About, 2026-10-14)
+- Found by: claude
+
 ### 2026-10-14 · A section with a Collection List can't become a component
 - Area: mcp
 - Scope: template-candidate

@@ -118,6 +118,18 @@ Description. Copy without a field yet: the capabilities intro on three
 pages and the varying title of the technology card. Next: Case Studies
 overview and template, then About.
 
+2026-10-14 (night) — **About page on staging** (`/about`, Figma `802:1027`),
+built from the approved prototype and checked at 1680, 1280, 820 and 390
+(every section the prototype's height, except the existing nav-height
+padding and Logo Band at phone width). The hero reuses the Service Hero
+classes with a still of Figma's CN Tower texture; the story panel runs the
+hero shader in a dark espresso-to-accent ramp over a still. The team is
+the new **Team** CMS collection (Role, Photo, Order, LinkedIn; six
+"Name Surname" placeholders); its template page is draft. 61 About
+classes, images in the asset folder "About". The nav's About link points
+to `/about`; the footer is unchanged. Open: real team names and photos,
+the View Careers link (no careers page).
+
 ## Ground rules for this project
 
 - Prototype first (wf-template workflow): the design is built and
