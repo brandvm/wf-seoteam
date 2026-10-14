@@ -26,9 +26,36 @@ const CHANGE_MS = 700;
 export function initTabs() {
   document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((root) => {
     const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-tabs-tab]'));
-    const panels = tabs.map((tab) => document.getElementById(tab.getAttribute('aria-controls') ?? ''));
     if (!tabs.length) return;
+    // Panels are found through aria-controls; where that is missing (tabs and
+    // panels from two CMS lists, which can't carry paired ids) the n-th tab
+    // gets the n-th [data-tabs-panel], and the module writes the ids and the
+    // ARIA links itself. [data-tabs-number] in a tab and [data-tabs-step] in
+    // a panel are filled with the position (01, 02… and 1, 2…).
+    const loose = Array.from(root.querySelectorAll<HTMLElement>('[data-tabs-panel]'));
+    const base = root.id || `tabs-${Array.from(document.querySelectorAll('[data-tabs]')).indexOf(root) + 1}`;
+    const panels = tabs.map((tab, i) => {
+      const panel = document.getElementById(tab.getAttribute('aria-controls') ?? '') ?? loose[i] ?? null;
+      if (panel) {
+        if (!tab.id) tab.id = `${base}-tab-${i + 1}`;
+        if (!panel.id) panel.id = `${base}-panel-${i + 1}`;
+        tab.setAttribute('aria-controls', panel.id);
+        panel.setAttribute('role', 'tabpanel');
+        panel.setAttribute('aria-labelledby', tab.id);
+      }
+      tab.setAttribute('role', 'tab');
+      tab.querySelectorAll('[data-tabs-number]').forEach((el) => { el.textContent = String(i + 1).padStart(2, '0'); });
+      panel?.querySelectorAll('[data-tabs-step]').forEach((el) => { el.textContent = String(i + 1); });
+      return panel;
+    });
     let current = Math.max(0, tabs.findIndex((tab) => tab.getAttribute('aria-selected') === 'true'));
+    tabs.forEach((tab, i) => {
+      const active = i === current;
+      tab.classList.toggle('is-active', active);
+      tab.setAttribute('aria-selected', String(active));
+      tab.tabIndex = active ? 0 : -1;
+      if (panels[i]) panels[i]!.hidden = !active;
+    });
 
     const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
     let changing = 0;

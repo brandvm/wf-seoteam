@@ -11,9 +11,19 @@ const OPEN_MS = 300;
 export function initFaq() {
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const triggers = document.querySelectorAll<HTMLButtonElement>('[data-faq-trigger]');
-  triggers.forEach((trigger) => {
-    const panel = document.getElementById(trigger.getAttribute('aria-controls') ?? '');
-    if (!panel) return;
+  triggers.forEach((trigger, index) => {
+    // The panel is the element named in aria-controls; where that is missing
+    // (an item from a CMS list, which can't carry a unique id) it is the
+    // [data-faq-panel] inside the trigger's [data-faq-item], and the module
+    // writes the id and the ARIA link itself.
+    let panel = document.getElementById(trigger.getAttribute('aria-controls') ?? '');
+    if (!panel) {
+      panel = trigger.closest('[data-faq-item]')?.querySelector<HTMLElement>('[data-faq-panel]') ?? null;
+      if (!panel) return;
+      if (!panel.id) panel.id = `faq-panel-${index + 1}`;
+      trigger.setAttribute('aria-controls', panel.id);
+      if (trigger.getAttribute('aria-expanded') !== 'true') { trigger.setAttribute('aria-expanded', 'false'); panel.hidden = true; }
+    }
     let running: Animation | undefined;
     const label = trigger.querySelector<HTMLElement>('[data-faq-label]');
     const labels = { closed: label?.textContent ?? '', open: trigger.dataset.faqOpenLabel ?? '' };
