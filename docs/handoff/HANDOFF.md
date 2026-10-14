@@ -319,7 +319,7 @@ designs will add to them.
 | Template 0.3–0.4 changes not taken yet | Skills updated to template master `07a21f1` (0.4.5), new `wf:*` checks and skill links added | Move the prototype style guide to the template's fixed layout; take the template loader's `WFC.setCSS` (this repo has its own fix for the same problem, already installed); the Phosphor icon font (not needed: icons are inline SVG) |
 | Tablet and mobile layouts | Claude's defaults: stacked hero, 2 / 1-column grids, 1-column FAQ, form below contact details | Designer supplies 991 / 767 / 479 frames, or approves the defaults |
 | Nav dropdowns (Services, Industries, Research) | Buttons with a chevron that do nothing | Designer supplies the dropdown panels and their links |
-| Mobile menu | Hamburger opens a dark panel under the bar | Designer supplies a mobile menu design |
+| Mobile menu | Designed by Claude, approved by Kajal and built 2026-10-14: full-screen espresso panel in G \| Nav W, numbered rows (Services and Industries open in place, Case Studies, Research, About), Speak With a Consultant, phone and email; `nav.ts` (dialog, scroll lock, focus trap) | About has no page yet (links to #) |
 | States | Hover/focus/pressed are Claude's defaults (accent hover, darker accent, focus ring) | Designer confirms or supplies states; FAQ open state, form error and success |
 | Button hover colour | Brand/Accent Dark `#e03f12` (not in Figma) | Designer picks the hover colour |
 | Contact form spec | Fields as designed, stand-in select options, no submission target | Where submissions go, who is notified, success and error copy, the options for City, Services, Source, Budget, which fields are required |
