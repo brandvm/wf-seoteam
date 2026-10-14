@@ -3,10 +3,33 @@
 // (no library). Every 6 seconds a dark wave swells at the bottom-left and
 // sweeps to the top-right, as in the Figma video, and a light follows the
 // pointer inside the hero. data-shader-theme="dark" draws the same scene in a
-// dark palette (the contact panel). The poster
+// dark palette (the contact panel). data-shader-palette picks the colours of
+// the light scene: a preset name (orange, ember, coral, plum, rose, umber:
+// the service page colours from the Figma guide) or five hex colours, dark
+// to light, separated by commas. The poster
 // image stays underneath the canvas, so nothing is lost when WebGL is
 // unavailable; with reduced motion one still frame is drawn; the loop
 // pauses while the hero is off screen or the tab is hidden.
+
+// Ramps for data-shader-palette, dark to light. "orange" is the home hero;
+// the others follow the service template guide (Figma 793:880).
+const PALETTES: Record<string, string[]> = {
+  orange: ['#1c0d08', '#9e330f', '#ed6629', '#f7a366', '#f0d694'],
+  ember: ['#1c0e09', '#a82b14', '#c2381f', '#e0602a', '#f2a65a'],
+  coral: ['#200f09', '#c43c18', '#ff6a4a', '#ff9a78', '#ffd0b8'],
+  plum: ['#1a0612', '#5a1440', '#7e2a5e', '#c98db4', '#f1d6e7'],
+  rose: ['#1c0a0c', '#9c2340', '#c0395a', '#e06a6f', '#f6c7c9'],
+  umber: ['#1c0e09', '#6b3518', '#8a4b2a', '#b97a4a', '#e8c9a0'],
+};
+
+export function paletteOf(value: string | undefined): number[] {
+  const stops = (value && PALETTES[value.trim().toLowerCase()]) || (value?.includes(',') ? value.split(',') : PALETTES.orange);
+  const rgb = stops.slice(0, 5).map((hex) => {
+    const h = hex.trim().replace('#', '');
+    return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+  });
+  return rgb.length === 5 && rgb.flat().every((n) => Number.isFinite(n)) ? rgb.flat() : paletteOf('orange');
+}
 
 const VERT = 'attribute vec2 p; void main() { gl_Position = vec4(p, 0.0, 1.0); }';
 
@@ -18,6 +41,7 @@ uniform vec2 u_mouse;   // 0..1, origin bottom left
 uniform float u_hover;  // 0..1, eased pointer presence
 uniform float u_grain;  // canvas pixels → CSS pixels, so the grain keeps its size
 uniform float u_dark;   // 0 = hero palette, 1 = dark palette (data-shader-theme="dark")
+uniform vec3 u_c[5];    // the light scene's ramp, dark to light (data-shader-palette)
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 
@@ -30,11 +54,11 @@ float drift(vec2 p, float t) {
 // Brand ramp: espresso → deep orange → accent → peach → cream.
 vec3 ramp(float t) {
   t = clamp(t, 0.0, 1.0);
-  vec3 c0 = vec3(0.11, 0.05, 0.03);
-  vec3 c1 = vec3(0.62, 0.20, 0.06);
-  vec3 c2 = vec3(0.93, 0.40, 0.16);
-  vec3 c3 = vec3(0.97, 0.64, 0.40);
-  vec3 c4 = vec3(0.94, 0.84, 0.58);
+  vec3 c0 = u_c[0];
+  vec3 c1 = u_c[1];
+  vec3 c2 = u_c[2];
+  vec3 c3 = u_c[3];
+  vec3 c4 = u_c[4];
   if (u_dark > 0.5) {
     // Dark theme: the same scene kept low, espresso to a dim ember.
     t *= 0.54;
@@ -213,6 +237,7 @@ function mount(canvas: HTMLCanvasElement) {
   const uHover = gl.getUniformLocation(program, 'u_hover');
   const uGrain = gl.getUniformLocation(program, 'u_grain');
   gl.uniform1f(gl.getUniformLocation(program, 'u_dark'), canvas.dataset.shaderTheme === 'dark' ? 1 : 0);
+  gl.uniform3fv(gl.getUniformLocation(program, 'u_c'), new Float32Array(paletteOf(canvas.dataset.shaderPalette)));
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const target = { x: 0.3, y: 0.4, hover: 0 };
