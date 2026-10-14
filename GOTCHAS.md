@@ -27,6 +27,26 @@ collected from client repos into those files.
 
 <!-- Add new entries here, newest first. -->
 
+### 2026-10-14 · Form labels published `for=""`, linked to nothing
+- Area: mcp
+- Scope: template-candidate
+- Symptom: Kajal saw "T Form Field" holding the SR Only span and the
+  input in the Navigator. The published markup was a real `<label>`
+  wrapping its field, but with `for=""`, and three inputs shared
+  `id="field"`.
+- Cause: the importer turns `<label>` into a Form Label and writes an
+  empty For. A label with a `for` attribute labels only the element with
+  that id, so the wrapping no longer counts and screen readers fall back
+  to the placeholder.
+- Fix: a custom attribute `for` on each Form Label (the API has no For
+  setting; the attribute replaces the empty one on publish) and a unique
+  id on every field. An id must not equal a section anchor: the services
+  select became `services-field` because `#services` is the section.
+  Check after any form import: every `for` matches an id in the same
+  form, no id repeats.
+- Status: fixed (Home and Style Guide, 2026-10-14)
+- Found by: human
+
 ### 2026-10-14 · No responsive sizes for an image uploaded through the API
 - Area: mcp
 - Scope: template-candidate
