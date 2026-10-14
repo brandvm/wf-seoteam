@@ -656,6 +656,22 @@ html.is-menu-open { overflow: hidden; }
    /research/…). */
 .nav-link[aria-current] { color: var(--_colors-semantic---text--accent); }
 
+/* ---- Service template (2026-10-14) ---- */
+
+/* repo-css: designer-cant — child styles on parent hover, and nth-child:
+   a capability row zooms its swatch and fills its arrow chip while it is
+   hovered; each row in a list of six shows a different part of the
+   service's hero texture (one image per service, so the position is all
+   that differs). Rows are Collection List items. */
+.cap-row:hover .cap-swatch-img { transform: scale(1.75); }
+.cap-row:hover .cap-chip { background-color: #f84c1c; color: #fff; } /* Brand/Accent, Brand/Paper */
+.cap-row:nth-child(6n + 1) .cap-swatch-img { object-position: 10% 30%; }
+.cap-row:nth-child(6n + 2) .cap-swatch-img { object-position: 38% 70%; }
+.cap-row:nth-child(6n + 3) .cap-swatch-img { object-position: 62% 15%; }
+.cap-row:nth-child(6n + 4) .cap-swatch-img { object-position: 85% 60%; }
+.cap-row:nth-child(6n + 5) .cap-swatch-img { object-position: 30% 95%; }
+.cap-row:nth-child(6n + 6) .cap-swatch-img { object-position: 55% 45%; }
+
 /* ============================================================
    06. UTILITIES
    ============================================================ */

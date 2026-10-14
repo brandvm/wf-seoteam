@@ -25,6 +25,22 @@ collected from client repos into those files.
 
 ## This project
 
+### 2026-10-14 · A section with a Collection List can't become a component
+- Area: mcp
+- Scope: template-candidate
+- Symptom: to reuse Home's case study, industry and research sections on
+  the service template, `transform_element_to_component` was refused for
+  each: "Components can't hold a live CMS binding".
+- Cause: platform limit. Unbinding the list first lets the conversion
+  through, but the list inside the component can't be bound again ("not
+  inside a CMS context").
+- Fix: only static sections become components (Logo Band, Contact
+  Section, group Sections; Home keeps instances, output unchanged). Lists
+  are rebuilt per page or template, so any change to a card has to be made
+  on Home, the service template and later templates alike.
+- Status: workaround confirmed
+- Found by: claude
+
 <!-- Add new entries here, newest first. -->
 
 ### 2026-10-14 · An imported combo published as a bare class; shared hiding on a shared combo
