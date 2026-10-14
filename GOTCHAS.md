@@ -27,6 +27,22 @@ collected from client repos into those files.
 
 <!-- Add new entries here, newest first. -->
 
+### 2026-10-14 · No responsive sizes for an image uploaded through the API
+- Area: mcp
+- Scope: template-candidate
+- Symptom: a new 4K hero poster (65 KB) was served to phones in full; the
+  old poster had `-p-500`/`-p-800`/`-p-1080` copies and a `srcset`.
+  Mobile Lighthouse dropped two points.
+- Cause: assets created through the API get no responsive variants, and
+  `set_attributes` refuses `srcset` and `sizes` on an Image element
+  ("An internal error occurred"), although `loading` and `fetchpriority`
+  are accepted on the same element.
+- Fix: bind a mid-size file (2560 wide) for now; for proper sizes, pick the
+  image in the Designer (variants are made then) or add `srcset`/`sizes`
+  there (MANUAL-TODO L). Size an API-uploaded image for phones first.
+- Status: workaround
+- Found by: claude
+
 ### 2026-10-13 · "Made in Webflow" badge hidden in repo CSS, for now
 - Area: css
 - Scope: project
