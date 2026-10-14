@@ -226,3 +226,30 @@ test('mobile menu opens as a dialog, locks scroll, keeps focus inside and closes
   await page.locator('a[href="#a"]').click();
   await expect(menu).toBeHidden();
 });
+
+test('desktop dropdowns open one at a time, by click or hover, and close on Escape and outside clicks', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.setContent(`<style>${css}.nav-panel{display:none}</style><div class="g-nav-w" data-nav><nav>
+      <button class="nav-link" type="button" aria-expanded="false" aria-controls="p-services" data-nav-dropdown>Services</button>
+      <button class="nav-link" type="button" aria-expanded="false" aria-controls="p-industries" data-nav-dropdown>Industries</button></nav>
+    <div class="nav-panel" id="p-services" data-nav-panel><div class="nav-panel-inner"><a href="#a">A</a></div></div>
+    <div class="nav-panel" id="p-industries" data-nav-panel><div class="nav-panel-inner"><a href="#b">B</a></div></div></div>
+    <main style="height:600px"><p>Page</p></main>`);
+  await page.addScriptTag({ content: js });
+  const services = page.locator('[aria-controls="p-services"]');
+  const industries = page.locator('[aria-controls="p-industries"]');
+  await services.click();
+  await expect(services).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('#p-services')).toBeVisible();
+  await industries.click();
+  await expect(services).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.locator('#p-services')).toBeHidden();
+  await expect(page.locator('#p-industries')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(industries).toHaveAttribute('aria-expanded', 'false');
+  await expect(industries).toBeFocused();
+  await services.hover();
+  await expect(page.locator('#p-services')).toBeVisible();
+  await page.mouse.click(600, 700);
+  await expect(page.locator('#p-services')).toBeHidden();
+});

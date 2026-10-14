@@ -656,6 +656,24 @@ html.is-menu-open { overflow: hidden; }
    /research/…). */
 .nav-link[aria-current] { color: var(--_colors-semantic---text--accent); }
 
+/* repo-css: js-state — src/modules/nav.ts opens a desktop dropdown: .is-open
+   shows the Nav Panel (hidden in the Designer), .is-visible right after
+   fades and lowers its card in; the button's caret turns while it is open.
+   Never below 992px (the mobile menu takes over). Layout and colours are
+   the Nav Panel classes in the Designer. */
+.nav-panel.is-open { display: block; }
+.nav-panel .nav-panel-inner { opacity: 0; transform: translateY(-0.5em); transition: opacity 180ms ease, transform 240ms cubic-bezier(0.2, 0.7, 0.2, 1); }
+.nav-panel.is-visible .nav-panel-inner { opacity: 1; transform: none; }
+.nav-link[aria-expanded="true"] { opacity: 1; }
+.nav-link[data-nav-dropdown] .icon { transition: transform 200ms ease; }
+.nav-link[aria-expanded="true"] .icon { transform: rotate(180deg); }
+@media screen and (max-width: 991px) { .nav-panel.is-open { display: none; } }
+
+/* repo-css: designer-cant — child style on parent hover: the photo in the
+   Services dropdown's consultant card zooms while the card is hovered. */
+.nav-panel-card:hover .nav-panel-card-img { transform: scale(1.04); }
+@media (prefers-reduced-motion: reduce) { .nav-panel .nav-panel-inner, .nav-panel-card-img { transition: none; } }
+
 /* ---- Service template (2026-10-14) ---- */
 
 /* repo-css: designer-cant — child styles on parent hover, and nth-child:

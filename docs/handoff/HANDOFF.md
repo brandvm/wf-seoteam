@@ -105,6 +105,19 @@ and 390: links, dates ("Sep 8, 2026"), count-ups, charts, no broken
 image. The tabs and FAQ modules pair by position, so CMS markup needs no
 ids.
 
+2026-10-14 (evening) — **Service pages on staging.** One Services Template
+serves all 22 service and industry pages (`/services/<slug>`): hero with
+the shader in a per-service palette (Hero Palette, poster as fallback),
+logo band, capabilities from the new Capabilities collection (102 items),
+an optional second list, why us with per-service copy, three featured case
+studies (Featured Case Studies field), industries (Show Industries),
+research, contact. Logo Band and Contact Section are components now (Home
+uses them too); sections with Collection Lists can't be components
+(GOTCHAS). SEO title and description come from Meta Title / Meta
+Description. Copy without a field yet: the capabilities intro on three
+pages and the varying title of the technology card. Next: Case Studies
+overview and template, then About.
+
 ## Ground rules for this project
 
 - Prototype first (wf-template workflow): the design is built and
@@ -318,7 +331,7 @@ designs will add to them.
 | --- | --- | --- |
 | Template 0.3–0.4 changes not taken yet | Skills updated to template master `07a21f1` (0.4.5), new `wf:*` checks and skill links added | Move the prototype style guide to the template's fixed layout; take the template loader's `WFC.setCSS` (this repo has its own fix for the same problem, already installed); the Phosphor icon font (not needed: icons are inline SVG) |
 | Tablet and mobile layouts | Claude's defaults: stacked hero, 2 / 1-column grids, 1-column FAQ, form below contact details | Designer supplies 991 / 767 / 479 frames, or approves the defaults |
-| Nav dropdowns (Services, Industries, Research) | Buttons with a chevron that do nothing | Designer supplies the dropdown panels and their links |
+| Nav dropdowns (Services, Industries) | Designed by Claude (no Figma frame), approved and built 2026-10-14: paper cards under the bar in G \| Nav W (Nav Panel classes), Services in two link groups plus a consultant card, Industries as ten tiles; `nav.ts` opens them by click or hover, one at a time. Research and Case Studies are plain links | Designer can replace the panels; their links are static (components can't hold CMS lists) |
 | Mobile menu | Designed by Claude, approved by Kajal and built 2026-10-14: full-screen espresso panel in G \| Nav W, numbered rows (Services and Industries open in place, Case Studies, Research, About), Speak With a Consultant, phone and email; `nav.ts` (dialog, scroll lock, focus trap) | About has no page yet (links to #) |
 | States | Hover/focus/pressed are Claude's defaults (accent hover, darker accent, focus ring) | Designer confirms or supplies states; FAQ open state, form error and success |
 | Button hover colour | Brand/Accent Dark `#e03f12` (not in Figma) | Designer picks the hover colour |

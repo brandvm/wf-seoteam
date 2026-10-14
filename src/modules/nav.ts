@@ -20,6 +20,8 @@ export function initNav() {
     if (bases.some((base) => path === base || path.startsWith(`${base}/`))) item.setAttribute('aria-current', 'true');
   });
 
+  initDropdowns();
+
   const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
   if (!toggle) return;
   const panel = document.querySelector<HTMLElement>('[data-mobile-menu]');
@@ -82,6 +84,84 @@ function initMobileMenu(toggle: HTMLButtonElement, panel: HTMLElement) {
   });
   matchMedia('(min-width: 992px)').addEventListener('change', (event) => {
     if (event.matches) close(false);
+  });
+}
+
+// Desktop dropdowns: a [data-nav-dropdown] button with aria-controls opens
+// the [data-nav-panel] of that id (.is-open shows it, .is-visible right
+// after a reflow runs its fade). Click toggles; with a mouse, hovering the button or
+// the panel opens it and leaving both closes it after a short delay. One
+// panel at a time; Escape, a click outside, focus leaving the nav, a link
+// click and resizing below 992px close it.
+const HOVER_OPEN_MS = 80;
+const HOVER_CLOSE_MS = 220;
+
+function initDropdowns() {
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-nav-dropdown][aria-controls]')];
+  const pairs = buttons
+    .map((button) => ({ button, panel: document.getElementById(button.getAttribute('aria-controls') || '') }))
+    .filter((pair): pair is { button: HTMLButtonElement; panel: HTMLElement } => !!pair.panel);
+  if (!pairs.length) return;
+  const nav = pairs[0].button.closest<HTMLElement>('[data-nav]') ?? document.body;
+  const desktop = matchMedia('(min-width: 992px)');
+  const hover = matchMedia('(hover: hover) and (pointer: fine)');
+  let current: (typeof pairs)[number] | null = null;
+  let timer: number | undefined;
+
+  const close = (returnFocus = false) => {
+    window.clearTimeout(timer);
+    if (!current) return;
+    const { button, panel } = current;
+    button.setAttribute('aria-expanded', 'false');
+    panel.classList.remove('is-visible', 'is-open');
+    if (returnFocus) button.focus({ preventScroll: true });
+    current = null;
+  };
+  const open = (pair: (typeof pairs)[number]) => {
+    window.clearTimeout(timer);
+    if (current === pair) return;
+    close();
+    current = pair;
+    pair.button.setAttribute('aria-expanded', 'true');
+    pair.panel.classList.add('is-open');
+    void pair.panel.offsetWidth; // apply display first, so the fade runs
+    pair.panel.classList.add('is-visible');
+  };
+
+  pairs.forEach((pair) => {
+    const { button, panel } = pair;
+    button.setAttribute('aria-expanded', 'false');
+    button.addEventListener('click', () => (current === pair ? close() : open(pair)));
+    const enter = () => {
+      if (!hover.matches || !desktop.matches) return;
+      window.clearTimeout(timer);
+      if (current !== pair) timer = window.setTimeout(() => open(pair), current ? 0 : HOVER_OPEN_MS);
+    };
+    const leave = () => {
+      if (!hover.matches) return;
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => current === pair && close(), HOVER_CLOSE_MS);
+    };
+    [button, panel].forEach((el) => {
+      el.addEventListener('mouseenter', enter);
+      el.addEventListener('mouseleave', leave);
+    });
+    panel.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('a[href]')) close();
+    });
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && current) close(true);
+  });
+  document.addEventListener('click', (event) => {
+    if (current && !nav.contains(event.target as Node)) close();
+  });
+  nav.addEventListener('focusout', (event) => {
+    if (current && !nav.contains(event.relatedTarget as Node | null)) close();
+  });
+  desktop.addEventListener('change', (event) => {
+    if (!event.matches) close();
   });
 }
 
