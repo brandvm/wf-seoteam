@@ -28,11 +28,31 @@ who approved them.
 
 ## Redirect map
 
-Every old URL → its closest new page, from the crawl saved in discovery.
+Every old URL → its closest new page. Source: the live seoteamtoronto.ca
+sitemap (2026-10-15: `/`, `/about-us`, `/contact`, 11 services, 12 case
+studies, 36 blog posts) and the CMS exports in `../Assets/reference/`.
+Unchanged paths need no rule: `/`, `/contact` and the nine service slugs that
+exist on the new site. Set these in Site settings › Publishing › 301
+redirects before the domain moves (the regex row is one rule).
 
 | Old URL | New URL | Status |
 | --- | --- | --- |
-| | | 301 |
+| `/about-us` | `/about` | 301 |
+| `/services/ai-readiness` | `/services/generative-engine-optimization` | 301 |
+| `/services/ppc-management` | `/services/ppc-agency` | 301 |
+| `/case-studies/personal-injury-law-local-seo-toronto` | `/case-studies/toronto-personal-injury-law-firm` | 301 |
+| `/case-studies/pr-agency-content-seo-toronto` | `/case-studies/pr-and-communications-agency` | 301 |
+| `/case-studies/enterprise-retail-tech-technical-seo` | `/case-studies/retail-technology-company` | 301 |
+| `/case-studies/custom-home-builder-seo-ppc-toronto` | `/case-studies/custom-home-builder` | 301 |
+| `/case-studies/nonprofit-seo-toronto` | `/case-studies/career-support-nonprofit` | 301 |
+| `/case-studies/financial-services-content-seo` | `/case-studies/financial-services-provider` | 301 |
+| `/case-studies/environmental-consulting-technical-seo` | `/case-studies/environmental-consulting-firm` | 301 |
+| `/case-studies/construction-engineering-technical-seo` | `/case-studies` (no new page) | 301 |
+| `/case-studies/commercial-liquidation-local-seo-toronto` | `/case-studies` (no new page) | 301 |
+| `/case-studies/home-renovation-contractor-seo-ppc-toronto` | `/case-studies` (no new page) | 301 |
+| `/case-studies/creative-agency-content-seo-toronto` | `/case-studies` (no new page) | 301 |
+| `/blog` | `/research` | 301 |
+| `/blog/(.*)` | `/research/%1` (all 39 posts kept their slugs) | 301 |
 
 ## Known issues
 

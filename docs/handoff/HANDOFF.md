@@ -177,6 +177,25 @@ Industries", Home "Explore Industries" and the industry breadcrumbs point
 to `/industries`. Unpublished CMS templates (FAQs, Topics, Capabilities,
 Team) use the template publish toggle, not draft.
 
+2026-10-15 (night) — **Content from the client's current site**
+(seoteamtoronto.ca CMS exports, used where they don't override the copy doc
+or keyword map; Kajal). Home FAQs: all 12 answers, adapted from the old
+site's answers with links to the new URLs ($2,500 CAD starting price
+confirmed); the "approach" answer is drafted from the doc's Why SEO Team
+copy. Research: the old site's 39 blog posts imported through the
+Designer's CSV import (slugs kept, links rewritten, images re-hosted,
+Topic and SEO Team Research author set); seven titles that targeted a
+keyword the map gives a service page are retitled and link to that page
+(site migration, dentists, doctors, lawyers, Shopify, Google Business
+Profile, citations); the nine placeholder articles are unpublished (not
+deleted), the four placeholder studies stay; featured article: GEO vs SEO
+vs AEO; Strategy shows in the filter. Case studies stay anonymous: the six
+matching cases got their story fields (industry, results, challenge, work)
+from the old data without names or quotes. Logo Band: its seven logos are
+already from the client's list; showing all 23 needs a marquee (design
+change, not made). Redirect map for the old URLs in BUILD-NOTES. Service-page
+FAQs (64 on the old site) not used, per Kajal.
+
 ## Ground rules for this project
 
 - Prototype first (wf-template workflow): the design is built and
@@ -396,8 +415,8 @@ designs will add to them.
 | Button hover colour | Brand/Accent Dark `#e03f12` (not in Figma) | Designer picks the hover colour |
 | Contact form spec | Fields as designed, stand-in select options, no submission target | Where submissions go, who is notified, success and error copy, the options for City, Services, Source, Budget, which fields are required |
 | SEO fields for Home | Prototype title only | Title, meta description, slug, Open Graph image |
-| FAQ answers | "Answer to come." | Client copy for all 12 answers |
-| Research articles | 4 identical placeholder cards | Research CMS collection (above) and real posts; card links |
+| FAQ answers | Filled 2026-10-15 from the old site's answers (adapted) | Client to review the wording, especially pricing and the drafted "approach" answer |
+| Research articles | 39 posts imported from the old site; 4 placeholder studies remain | Real studies to replace the 4 placeholders, or unpublish them |
 | Hero card link | Arrow button links to `#` | Where it goes |
 | Logo strip | 7 logos from Figma, 80% opacity, `mix-blend-mode: exclusion` | Confirm logo usage rights |
 

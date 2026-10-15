@@ -25,6 +25,29 @@ collected from client repos into those files.
 
 ## This project
 
+### 2026-10-15 · Bulk rich-text content: the Designer's CSV import, not the API
+- Area: mcp
+- Scope: template-candidate
+- Symptom: 39 blog posts (870 KB of HTML) from the client's old Webflow
+  site had to go into the Research collection; sending each body through
+  `create_collection_items` would mean pasting every article into a tool
+  call.
+- Cause: the MCP only takes field data inline.
+- Fix: clean the export into a CSV whose headers match the field names
+  (script: rewrite internal links, drop the body's own `<h1>`, strip
+  `<strong>` inside headings and zero-width joiners), then CMS › collection
+  › Import in the Designer (Claude in Chrome `file_upload` on the dialog's
+  file input). Columns map by name; take the offered backup. Results: cover
+  and body images are re-hosted on this site's CDN, items arrive staged
+  (not draft), a `<table>` becomes one run-together paragraph (rebuild it
+  as a list), image alt in rich text becomes `__wf_reserved_inherit`, and
+  references (Topic, Author) still need an API write after the import.
+  Also: renaming a form field's Name in the Designer or API changes its
+  DOM id too (the label `for` had to follow), and a double click in the
+  Components panel inserts an instance on the page (Cmd+Z).
+- Status: workaround confirmed (Research, 2026-10-15)
+- Found by: claude
+
 ### 2026-10-15 · A Collection List that refuses sort and filter on one page
 - Area: mcp
 - Scope: template-candidate
