@@ -253,3 +253,10 @@ test('desktop dropdowns open one at a time, by click or hover, and close on Esca
   await page.mouse.click(600, 700);
   await expect(page.locator('#p-services')).toBeHidden();
 });
+
+test('case study bars take their width from data-bar-ratio', async ({ page }) => {
+  await page.setContent(`<style>${css}.f{width:50%;height:4px}</style><div style="width:200px"><div class="f" data-bar-ratio="46"></div><div class="f" data-bar-ratio="abc"></div><div class="f" data-bar-ratio="140"></div></div>`);
+  await page.addScriptTag({ content: js });
+  const widths = await page.$$eval('.f', (els) => els.map((e) => Math.round(e.getBoundingClientRect().width)));
+  expect(widths).toEqual([92, 100, 100]);
+});

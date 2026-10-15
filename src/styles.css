@@ -674,6 +674,21 @@ html.is-menu-open { overflow: hidden; }
 .nav-panel-card:hover .nav-panel-card-img { transform: scale(1.04); }
 @media (prefers-reduced-motion: reduce) { .nav-panel .nav-panel-inner, .nav-panel-card-img { transition: none; } }
 
+/* ---- Case studies (2026-10-15) ---- */
+
+/* repo-css: designer-cant — display: contents on the CMS list item (CS
+   Item, the w-dyn-item) so each card or featured row is the grid child
+   of CS List and a featured row (grid-column 1 / -1 on CS Feature) can
+   span the row. The Designer has no "contents" display value. */
+.cs-item { display: contents; }
+
+/* repo-css: designer-cant — child styles on parent hover: a case card's
+   image zooms a little and its title turns accent while the card is
+   hovered. */
+.cs-card:hover .cs-card-img { transform: scale(1.04); }
+.cs-card:hover .cs-card-title { color: var(--_colors---brand--accent-dark); }
+@media (prefers-reduced-motion: reduce) { .cs-card-img { transition: none; } }
+
 /* ---- About page (2026-10-14) ---- */
 
 /* repo-css: designer-cant — child style on parent hover: the photo in an
