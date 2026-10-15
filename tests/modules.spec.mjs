@@ -275,6 +275,18 @@ test('desktop dropdowns share one flyout card: switch without closing, height fo
   await expect(page.locator('#p-services')).toBeHidden();
 });
 
+test('the nav takes its light class while the page is scrolled', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 600 });
+  await page.setContent(`<div class="g-nav-w" data-nav data-nav-scroll-class="w-variant-x" style="position:fixed;top:0"></div><main style="height:3000px"></main>`);
+  await page.addScriptTag({ content: js });
+  const nav = page.locator('.g-nav-w');
+  await expect(nav).not.toHaveClass(/w-variant-x/);
+  await page.mouse.wheel(0, 400);
+  await expect(nav).toHaveClass(/w-variant-x/);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect(nav).not.toHaveClass(/w-variant-x/);
+});
+
 test('case study bars take their width from data-bar-ratio', async ({ page }) => {
   await page.setContent(`<style>${css}.f{width:50%;height:4px}</style><div style="width:200px"><div class="f" data-bar-ratio="46"></div><div class="f" data-bar-ratio="abc"></div><div class="f" data-bar-ratio="140"></div></div>`);
   await page.addScriptTag({ content: js });

@@ -8,6 +8,11 @@
 // while it is open. Without that panel the older behaviour applies: .is-open
 // on the nav shows the desktop menu as a dropdown (repo-css js-state).
 //
+// [data-nav-scroll-class="<class …>"] on the nav wrapper: those classes are
+// added while the page is scrolled more than 8px, so the bar turns light over
+// the content. In Webflow it holds the Light variant's class (w-variant-…),
+// in the prototype `is-light`; a nav already carrying them is left alone.
+//
 // [data-nav-section="/research /authors"] (one or more paths, space-
 // separated) on a nav item gets aria-current="true" on pages under any of
 // them, so the section in view is marked (repo-css js-state).
@@ -21,12 +26,28 @@ export function initNav() {
   });
 
   initDropdowns();
+  initScrollTheme();
 
   const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
   if (!toggle) return;
   const panel = document.querySelector<HTMLElement>('[data-mobile-menu]');
   if (panel) initMobileMenu(toggle, panel);
   else initDropdownMenu(toggle);
+}
+
+function initScrollTheme() {
+  const nav = document.querySelector<HTMLElement>('[data-nav-scroll-class]');
+  const classes = (nav?.dataset.navScrollClass || '').split(/\s+/).filter(Boolean);
+  if (!nav || !classes.length || classes.every((c) => nav.classList.contains(c))) return;
+  let scrolled = false;
+  const update = () => {
+    const next = window.scrollY > 8;
+    if (next === scrolled) return;
+    scrolled = next;
+    classes.forEach((c) => nav.classList.toggle(c, scrolled));
+  };
+  window.addEventListener('scroll', update, { passive: true });
+  update();
 }
 
 function initMobileMenu(toggle: HTMLButtonElement, panel: HTMLElement) {

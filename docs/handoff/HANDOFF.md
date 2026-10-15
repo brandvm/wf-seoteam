@@ -140,6 +140,10 @@ wide screens (GOTCHAS). **Desktop nav is Apple-style** (Kajal): one shared
 flyout card whose height follows the open panel, staggered link fade, a
 curtain that blurs and dims the page and the bar's background; nav.ts and
 repo CSS, Webflow classes Nav Curtain, Nav Flyout, Nav Flyout Card.
+The bar turns light once the page scrolls (Kajal): nav.ts adds the
+classes in `data-nav-scroll-class` on G | Nav W, which holds the Light
+variant's class (`w-variant-282b023e-…`); if that variant is ever
+recreated, update the attribute.
 Device check (Playwright, nine Apple screen sizes): fine on phones, iPad
 portrait and Macs; iPad Pro 13" (1032) and iPad landscape squeeze the
 desktop layout (footer email, Home case facts and industry tiles, article
