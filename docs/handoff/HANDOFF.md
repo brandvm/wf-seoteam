@@ -167,6 +167,16 @@ FAQ answers, Explore Industries on Home (no industries page), the doc's
 Terms, Accessibility, HTML Sitemap, 404, Contact (`scripts/gen-pages.py`).
 Legal copy is a general template for the client's lawyer to review.
 
+2026-10-15 (evening) — **New pages in Webflow.** Careers (application
+form, CV input without a submission target), Privacy, Terms,
+Accessibility, HTML Sitemap (Collection Lists), 404, Contact (noindex,
+unlinked), Industries overview (`/industries`, cards from Services with
+Industry Summary, ordered by `cms-order.ts`), Home Testimonials
+(placeholder quotes, scroll-snap slider with progress). Nav "All
+Industries", Home "Explore Industries" and the industry breadcrumbs point
+to `/industries`. Unpublished CMS templates (FAQs, Topics, Capabilities,
+Team) use the template publish toggle, not draft.
+
 ## Ground rules for this project
 
 - Prototype first (wf-template workflow): the design is built and

@@ -25,6 +25,41 @@ collected from client repos into those files.
 
 ## This project
 
+### 2026-10-15 · A Collection List that refuses sort and filter on one page
+- Area: mcp
+- Scope: template-candidate
+- Symptom: on /industries (a page duplicated from About), every sort write
+  on the cards list failed with "[Conflict] The operation could not be
+  applied to the component map", in the Designer too, at body level and on
+  a freshly created list. Filter and curated items reported success and
+  read back empty; limit was accepted. The same sort on the Sitemap page
+  worked. Copy and paste of a working list from another page arrived with
+  no source, filter or sort ("pasting cross-site, CMS bindings removed").
+- Cause: unknown; page-specific state in Webflow's component map.
+- Fix: no list query at all. The item's visibility is bound to a Switch
+  (Industry Tile), the item carries `data-order` bound to Tile Order, the
+  list carries `data-sort-by-order`, and `src/modules/cms-order.ts` puts
+  the items in order on load (without the script the CMS order shows).
+  If a list refuses a query write once, stop: later writes won't take.
+- Status: workaround (Industries page, 2026-10-15)
+- Found by: claude
+
+### 2026-10-15 · Keep a CMS template unpublished with its toggle, not with draft
+- Area: mcp
+- Scope: template-candidate
+- Symptom: the FAQs, Topics, Capabilities and Team templates had been set
+  to draft through the API to keep their item pages off the site; Kajal
+  pointed out that templates have their own switch for this.
+- Cause: `update_page_settings` exposes `draft` but not the template's
+  "Publish this Collection Template page" setting (the API reads it back
+  as `shouldPublish`, read-only).
+- Fix: switch "Publish this Collection Template page" off in the template's
+  page settings in the Designer (the template moves under "Unpublished
+  Collections"), then set `draft: false` through the API. Draft is for
+  static pages only. Read back `shouldPublish: false`.
+- Status: fixed (2026-10-15)
+- Found by: human
+
 ### 2026-10-15 · Conditional visibility without the Designer: a Switch field
 - Area: mcp
 - Scope: template-candidate

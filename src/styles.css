@@ -702,6 +702,28 @@ html.is-menu-open { overflow: hidden; }
 .cs-card:hover .cs-card-title { color: var(--_colors---brand--accent-dark); }
 @media (prefers-reduced-motion: reduce) { .cs-card-img { transition: none; } }
 
+/* ---- Home testimonials (2026-10-15) ---- */
+
+/* repo-css: designer-cant — hidden scrollbar on the testimonial track
+   (::-webkit-scrollbar); the arrows, arrow keys, touch and trackpad move
+   it (src/modules/slider.ts). */
+.testimonial-track { scrollbar-width: none; }
+.testimonial-track::-webkit-scrollbar { display: none; }
+
+/* repo-css: designer-cant — :disabled (Webflow has no disabled state): the
+   slider module disables the arrow at either end; no hover then. */
+.icon-button.testimonial-arrow:disabled { opacity: 0.4; cursor: default; pointer-events: none; }
+
+/* repo-css: designer-cant — prefers-reduced-motion: no progress animation
+   (the slider module also scrolls without smoothing then). */
+@media (prefers-reduced-motion: reduce) { .testimonial-progress-fill { transition: none; } }
+
+/* ---- Industries overview, /industries (2026-10-15) ---- */
+
+/* repo-css: designer-cant — child style on parent hover: an industry
+   card's arrow chip fills orange while the card is hovered. */
+.industry-card:hover .button-chip.is-card-chip { border-color: #f84c1c; background-color: #f84c1c; color: #fff; } /* Brand/Accent, Brand/Paper */
+
 /* ---- About page (2026-10-14) ---- */
 
 /* repo-css: designer-cant — child style on parent hover: the photo in an

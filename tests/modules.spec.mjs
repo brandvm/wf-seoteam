@@ -296,6 +296,12 @@ test('with data-nav-scroll-deep the light class also goes on everything in the b
   await expect(page.locator('.nav-panel-link')).not.toHaveClass(/w-variant-x/);
 });
 
+test('a list with data-sort-by-order puts its items in data-order order', async ({ page }) => {
+  await page.setContent(`<div data-sort-by-order><div data-order="3">c</div><div>x</div><div data-order="1">a</div><div data-order="2">b</div></div>`);
+  await page.addScriptTag({ content: js });
+  expect(await page.$$eval('[data-sort-by-order] > div', (els) => els.map((e) => e.textContent).join(''))).toBe('abcx');
+});
+
 test('case study bars take their width from data-bar-ratio', async ({ page }) => {
   await page.setContent(`<style>${css}.f{width:50%;height:4px}</style><div style="width:200px"><div class="f" data-bar-ratio="46"></div><div class="f" data-bar-ratio="abc"></div><div class="f" data-bar-ratio="140"></div></div>`);
   await page.addScriptTag({ content: js });
