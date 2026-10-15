@@ -227,30 +227,51 @@ test('mobile menu opens as a dialog, locks scroll, keeps focus inside and closes
   await expect(menu).toBeHidden();
 });
 
-test('desktop dropdowns open one at a time, by click or hover, and close on Escape and outside clicks', async ({ page }) => {
+test('desktop dropdowns share one flyout card: switch without closing, height follows the panel, close on Escape, curtain and outside clicks', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
-  await page.setContent(`<style>${css}.nav-panel{display:none}</style><div class="g-nav-w" data-nav><nav>
+  await page.setContent(`<style>${css}.nav-curtain,.nav-flyout{display:none}.nav-curtain{position:fixed;inset:0}.nav-flyout{position:absolute;left:0;right:0;top:100%}.nav-flyout-card{position:relative;overflow:hidden}.nav-panel{position:absolute;left:0;right:0;top:0;visibility:hidden}</style>
+    <div class="g-nav-w" data-nav style="position:fixed;top:0;left:0;right:0;height:60px"><div class="nav-curtain" data-nav-curtain></div><nav style="position:relative">
       <button class="nav-link" type="button" aria-expanded="false" aria-controls="p-services" data-nav-dropdown>Services</button>
       <button class="nav-link" type="button" aria-expanded="false" aria-controls="p-industries" data-nav-dropdown>Industries</button></nav>
-    <div class="nav-panel" id="p-services" data-nav-panel><div class="nav-panel-inner"><a href="#a">A</a></div></div>
-    <div class="nav-panel" id="p-industries" data-nav-panel><div class="nav-panel-inner"><a href="#b">B</a></div></div></div>
-    <main style="height:600px"><p>Page</p></main>`);
+    <div class="nav-flyout" data-nav-flyout><div class="nav-flyout-card" data-nav-flyout-card>
+      <div class="nav-panel" id="p-services" data-nav-panel><div class="nav-panel-inner" style="height:300px"><div class="nav-panel-list"><a href="#a">A</a></div></div></div>
+      <div class="nav-panel" id="p-industries" data-nav-panel><div class="nav-panel-inner" style="height:200px"><div class="nav-panel-list"><a href="#b">B</a></div></div></div>
+    </div></div></div>
+    <main style="height:1200px;padding-top:60px"><p>Page</p></main>`);
   await page.addScriptTag({ content: js });
   const services = page.locator('[aria-controls="p-services"]');
   const industries = page.locator('[aria-controls="p-industries"]');
+  const card = page.locator('[data-nav-flyout-card]');
+  const height = () => card.evaluate((el) => el.style.height);
   await services.click();
   await expect(services).toHaveAttribute('aria-expanded', 'true');
   await expect(page.locator('#p-services')).toBeVisible();
+  await expect(page.locator('[data-nav-curtain]')).toHaveClass(/is-visible/);
+  expect(await height()).toBe('300px');
   await industries.click();
   await expect(services).toHaveAttribute('aria-expanded', 'false');
   await expect(page.locator('#p-services')).toBeHidden();
   await expect(page.locator('#p-industries')).toBeVisible();
+  await expect(page.locator('[data-nav-flyout]')).toHaveClass(/is-open/); // same card, never closed
+  expect(await height()).toBe('200px');
   await page.keyboard.press('Escape');
   await expect(industries).toHaveAttribute('aria-expanded', 'false');
   await expect(industries).toBeFocused();
+  expect(await height()).toBe('0px');
+  // opened from the keyboard with the pointer resting on the page: stays open
+  await page.mouse.move(600, 600);
+  await services.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(400);
+  await expect(page.locator('#p-services')).toBeVisible();
+  // a short pause before a hover opens, then moving over the page closes it
+  await page.keyboard.press('Escape');
   await services.hover();
   await expect(page.locator('#p-services')).toBeVisible();
-  await page.mouse.click(600, 700);
+  await page.mouse.move(600, 650, { steps: 4 });
+  await expect(page.locator('#p-services')).toBeHidden();
+  await services.click();
+  await page.mouse.click(5, 790);
   await expect(page.locator('#p-services')).toBeHidden();
 });
 

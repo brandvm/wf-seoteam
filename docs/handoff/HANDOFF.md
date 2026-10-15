@@ -130,6 +130,21 @@ classes, images in the asset folder "About". The nav's About link points
 to `/about`; the footer is unchanged. Open: real team names and photos,
 the View Careers link (no careers page).
 
+2026-10-15 — **Case Studies on staging.** `/case-studies` (overview, Finsweet
+filter by Filter Group, one of three card designs per item by Layout) and
+the Case Studies Template (12 pages, sections hidden when their fields are
+empty, "More Results" = 3 non-featured cases excluding the current one).
+SEO: template title Name + " | SEO Team Case Study", description Client +
+Stat Label (Result is filled on 2 items only). Service hero centred on
+wide screens (GOTCHAS). **Desktop nav is Apple-style** (Kajal): one shared
+flyout card whose height follows the open panel, staggered link fade, a
+curtain that blurs and dims the page and the bar's background; nav.ts and
+repo CSS, Webflow classes Nav Curtain, Nav Flyout, Nav Flyout Card.
+Device check (Playwright, nine Apple screen sizes): fine on phones, iPad
+portrait and Macs; iPad Pro 13" (1032) and iPad landscape squeeze the
+desktop layout (footer email, Home case facts and industry tiles, article
+column, assessment form): open, a 1100px layout step proposed.
+
 ## Ground rules for this project
 
 - Prototype first (wf-template workflow): the design is built and
@@ -343,7 +358,7 @@ designs will add to them.
 | --- | --- | --- |
 | Template 0.3–0.4 changes not taken yet | Skills updated to template master `07a21f1` (0.4.5), new `wf:*` checks and skill links added | Move the prototype style guide to the template's fixed layout; take the template loader's `WFC.setCSS` (this repo has its own fix for the same problem, already installed); the Phosphor icon font (not needed: icons are inline SVG) |
 | Tablet and mobile layouts | Claude's defaults: stacked hero, 2 / 1-column grids, 1-column FAQ, form below contact details | Designer supplies 991 / 767 / 479 frames, or approves the defaults |
-| Nav dropdowns (Services, Industries) | Designed by Claude (no Figma frame), approved and built 2026-10-14: paper cards under the bar in G \| Nav W (Nav Panel classes), Services in two link groups plus a consultant card, Industries as ten tiles; `nav.ts` opens them by click or hover, one at a time. Research and Case Studies are plain links | Designer can replace the panels; their links are static (components can't hold CMS lists) |
+| Nav dropdowns (Services, Industries) | Designed by Claude (no Figma frame), approved and built 2026-10-14; mechanism changed to Apple's (apple.ca) 2026-10-15 at Kajal's request: one Nav Flyout Card shared by both panels (height animates to the open panel, content swaps without closing), staggered fade of labels and links, Nav Curtain blurs and dims the page and the bar's background; first hover opens after 140ms, switching is immediate. Research and Case Studies are plain links | Designer can replace the panels; their links are static (components can't hold CMS lists) |
 | Mobile menu | Designed by Claude, approved by Kajal and built 2026-10-14: full-screen espresso panel in G \| Nav W, numbered rows (Services and Industries open in place, Case Studies, Research, About), Speak With a Consultant, phone and email; `nav.ts` (dialog, scroll lock, focus trap) | About has no page yet (links to #) |
 | States | Hover/focus/pressed are Claude's defaults (accent hover, darker accent, focus ring) | Designer confirms or supplies states; FAQ open state, form error and success |
 | Button hover colour | Brand/Accent Dark `#e03f12` (not in Figma) | Designer picks the hover colour |

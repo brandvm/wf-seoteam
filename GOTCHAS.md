@@ -25,6 +25,42 @@ collected from client repos into those files.
 
 ## This project
 
+### 2026-10-15 · The Webflow nav root had no data-nav
+- Area: designer
+- Scope: project
+- Symptom: building the Apple-style dropdown, the G | Nav W root in
+  Webflow had no `data-nav`, which the prototype markup has; nav.ts then
+  scopes "leave the nav" and "click outside" to `body`.
+- Cause: lost in the original nav import (the importer keeps some
+  attributes and drops others).
+- Fix: set `data-nav` on the component root through the API. After any
+  import, compare the root's `data-*` hooks with the prototype.
+- Status: fixed (Webflow, 2026-10-15)
+- Found by: claude
+
+### 2026-10-15 · A capped bleed panel sticks to the left on wide screens; Finsweet's two counts
+- Area: designer
+- Scope: template-candidate
+- Symptom: (1) on a 2000px+ screen the service and About hero panel sat
+  against the left edge, outside the left rail, with a wide gap on the
+  right. The device check (fixed widths, overflow only) did not catch it;
+  Kajal did. (2) On /case-studies "Showing 12 case studies" stayed at 12
+  with a filter on; the inactive "All results" count was white on paper.
+- Cause: (1) Service Hero had `max-width: 105em` and bleed margins of
+  `-1.875em`; once the parent is wider than the cap, nothing centres the
+  panel. (2) In Finsweet List v2 `fs-list-element="items-count"` is the
+  total; the filtered number is `results-count`. The count colour was
+  set for the dark active chip only.
+- Fix: (1) margin-left and margin-right
+  `max(-1.875em, calc((100% - 105em) / 2))` (the API accepts it and the
+  Designer keeps it): the bleed below the cap, centred on the rails above
+  it; checked at 2560, 2000, 1680, 1280 and 390. Any capped element with
+  negative margins needs the same. Check wide screens by comparing an
+  element's left and right gaps, not only overflow. (2) `results-count`
+  on the span; CS Filter Count `color: inherit`, opacity 0.6.
+- Status: fixed (Webflow, 2026-10-15)
+- Found by: human
+
 ### 2026-10-14 · The importer drops a section id and a link's new-tab target
 - Area: mcp
 - Scope: template-candidate

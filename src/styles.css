@@ -656,23 +656,33 @@ html.is-menu-open { overflow: hidden; }
    /research/…). */
 .nav-link[aria-current] { color: var(--_colors-semantic---text--accent); }
 
-/* repo-css: js-state — src/modules/nav.ts opens a desktop dropdown: .is-open
-   shows the Nav Panel (hidden in the Designer), .is-visible right after
-   fades and lowers its card in; the button's caret turns while it is open.
+/* repo-css: js-state — src/modules/nav.ts runs the desktop dropdowns
+   Apple-style: .is-open shows the Nav Flyout and the Nav Curtain (both
+   hidden in the Designer), .is-visible fades the curtain in; the Nav Flyout
+   Card's height is set inline from the open panel and animates; .is-active
+   shows a Nav Panel, whose labels, links and card fade in one after another
+   (--nav-i, set by the module). The button's caret turns while it is open.
    Never below 992px (the mobile menu takes over). Layout and colours are
-   the Nav Panel classes in the Designer. */
-.nav-panel.is-open { display: block; }
-.nav-panel .nav-panel-inner { opacity: 0; transform: translateY(-0.5em); transition: opacity 180ms ease, transform 240ms cubic-bezier(0.2, 0.7, 0.2, 1); }
-.nav-panel.is-visible .nav-panel-inner { opacity: 1; transform: none; }
+   the Nav Flyout / Nav Panel classes in the Designer. */
+.nav-flyout.is-open, .nav-curtain.is-open { display: block; }
+.nav-curtain { opacity: 0; transition: opacity 280ms ease; }
+.nav-curtain.is-visible { opacity: 1; }
+.nav-flyout-card { height: 0; transition: height 360ms cubic-bezier(0.4, 0, 0.2, 1); }
+.nav-panel { transition: visibility 0s linear 160ms; }
+.nav-panel.is-active { visibility: visible; transition: none; }
+.nav-panel :is(.nav-panel-label, .nav-panel-list > *, .nav-panel-more, .nav-panel-card) { opacity: 0; transform: translateY(-0.375em); transition: opacity 140ms ease, transform 140ms ease, background-color 0.2s ease; }
+.nav-panel.is-active :is(.nav-panel-label, .nav-panel-list > *, .nav-panel-more, .nav-panel-card) { opacity: 1; transform: none; transition: opacity 320ms ease calc(80ms + var(--nav-i, 0) * 18ms), transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1) calc(80ms + var(--nav-i, 0) * 18ms), background-color 0.2s ease; }
 .nav-link[aria-expanded="true"] { opacity: 1; }
 .nav-link[data-nav-dropdown] .icon { transition: transform 200ms ease; }
 .nav-link[aria-expanded="true"] .icon { transform: rotate(180deg); }
-@media screen and (max-width: 991px) { .nav-panel.is-open { display: none; } }
+@media screen and (max-width: 991px) { .nav-flyout.is-open, .nav-curtain.is-open { display: none; } }
 
 /* repo-css: designer-cant — child style on parent hover: the photo in the
    Services dropdown's consultant card zooms while the card is hovered. */
 .nav-panel-card:hover .nav-panel-card-img { transform: scale(1.04); }
-@media (prefers-reduced-motion: reduce) { .nav-panel .nav-panel-inner, .nav-panel-card-img { transition: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .nav-curtain, .nav-flyout-card, .nav-panel, .nav-panel :is(.nav-panel-label, .nav-panel-list > *, .nav-panel-more, .nav-panel-card), .nav-panel-card-img { transition: none !important; }
+}
 
 /* ---- Case studies (2026-10-15) ---- */
 
