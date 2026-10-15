@@ -41,7 +41,10 @@ collected from client repos into those files.
   list carries `data-sort-by-order`, and `src/modules/cms-order.ts` puts
   the items in order on load (without the script the CMS order shows).
   If a list refuses a query write once, stop: later writes won't take.
-- Status: workaround (Industries page, 2026-10-15)
+  Later: Kajal rebuilt the list in the Designer with a native sort, so the
+  script was removed. Lesson: report a refused native setting first
+  (Designer step) before writing workaround code.
+- Status: fixed natively by Kajal (2026-10-15); cms-order.ts removed
 - Found by: claude
 
 ### 2026-10-15 · Keep a CMS template unpublished with its toggle, not with draft
@@ -72,7 +75,8 @@ collected from client repos into those files.
   with a CMS binding to it. Costs an extra field for editors to tick; the
   help text says so. Also: Link fields accept relative URLs (`/#industries`),
   and a Heading's or Link's text binds through `set_settings` key `text`.
-- Status: workaround confirmed (Services Template, 2026-10-15)
+- Status: replaced by native "is set" conditions in the Designer and the
+  two switch fields deleted (2026-10-15)
 - Found by: claude
 
 ### 2026-10-15 · An invisible script-hidden overlay blocks the Designer canvas

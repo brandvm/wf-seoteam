@@ -11,7 +11,6 @@ import { initHeroShader } from './modules/hero-shader';
 import { initNav } from './modules/nav';
 import { initPanelShader } from './modules/panel-shader';
 import { initCaseVisuals } from './modules/case-visuals';
-import { initCmsOrder } from './modules/cms-order';
 import { initShare } from './modules/share';
 import { initSlider } from './modules/slider';
 import { initTabs } from './modules/tabs';
@@ -45,7 +44,6 @@ function boot() {
   run('share', initShare);
   run('filter-all', initFilterAll);
   run('case-visuals', initCaseVisuals);
-  run('cms-order', initCmsOrder);
   // Last: Finsweet starts after the other modules have set their attributes.
   run('finsweet-loader', initFinsweetLoader);
   // Add project feature initializers here: run('<name>', init<Name>);
