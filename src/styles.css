@@ -940,6 +940,12 @@ html.is-menu-open { overflow: hidden; }
   display: none !important;
 }
 
+/* The canvas runs no script, so the mobile menu is never `hidden` there and
+   would cover the page below 992px; the Designer selects it on every click.
+   To edit it, add the Is Open class to Mobile Menu for the session (it shows
+   on the canvas) and remove it before publishing. */
+html.wf-design-mode .mobile-menu:not(.is-open) { display: none; }
+
 /* Keep future JS-driven entrance animations visible in the Editor. */
 .w-editor [data-anim] {
   visibility: visible !important;

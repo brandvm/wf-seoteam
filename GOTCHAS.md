@@ -25,6 +25,21 @@ collected from client repos into those files.
 
 ## This project
 
+### 2026-10-15 · An invisible script-hidden overlay blocks the Designer canvas
+- Area: designer
+- Scope: template-candidate
+- Symptom: below 992px every click on the canvas selected the nav (Kajal).
+- Cause: the full-screen mobile menu is hidden by nav.ts (`hidden`); the
+  canvas runs no script, so it sat there at opacity 0 over the page. The
+  canvas also ignored `pointer-events: none` (or kept the cached old sheet:
+  the 2a link is fetched without a cache-buster in the Designer, so a new
+  repo rule can take up to 10 minutes to reach the canvas).
+- Fix: `html.wf-design-mode .mobile-menu:not(.is-open) { display: none; }`
+  (canvas-preview). To edit the menu, add Is Open to Mobile Menu for the
+  session. Any overlay that a script hides needs the same rule.
+- Status: fixed (repo, 2026-10-15)
+- Found by: human
+
 ### 2026-10-15 · Turning a component variant on from JS; a border that flashes black
 - Area: designer
 - Scope: template-candidate
