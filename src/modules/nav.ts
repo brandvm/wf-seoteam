@@ -12,6 +12,9 @@
 // added while the page is scrolled more than 8px, so the bar turns light over
 // the content. In Webflow it holds the Light variant's class (w-variant-…),
 // in the prototype `is-light`; a nav already carrying them is left alone.
+// Webflow puts a variant's class on every element it styles, so with
+// [data-nav-scroll-deep] the classes also go on everything in the bar (the
+// <nav>); elements the variant doesn't style ignore them.
 //
 // [data-nav-section="/research /authors"] (one or more paths, space-
 // separated) on a nav item gets aria-current="true" on pages under any of
@@ -39,12 +42,14 @@ function initScrollTheme() {
   const nav = document.querySelector<HTMLElement>('[data-nav-scroll-class]');
   const classes = (nav?.dataset.navScrollClass || '').split(/\s+/).filter(Boolean);
   if (!nav || !classes.length || classes.every((c) => nav.classList.contains(c))) return;
+  const bar = nav.hasAttribute('data-nav-scroll-deep') ? nav.querySelector('nav') : null;
+  const targets = [nav, ...(bar ? [bar, ...bar.querySelectorAll<HTMLElement>('*')] : [])];
   let scrolled = false;
   const update = () => {
     const next = window.scrollY > 8;
     if (next === scrolled) return;
     scrolled = next;
-    classes.forEach((c) => nav.classList.toggle(c, scrolled));
+    targets.forEach((el) => classes.forEach((c) => el.classList.toggle(c, scrolled)));
   };
   window.addEventListener('scroll', update, { passive: true });
   update();

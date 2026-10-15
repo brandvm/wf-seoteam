@@ -287,6 +287,15 @@ test('the nav takes its light class while the page is scrolled', async ({ page }
   await expect(nav).not.toHaveClass(/w-variant-x/);
 });
 
+test('with data-nav-scroll-deep the light class also goes on everything in the bar', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 600 });
+  await page.setContent(`<div class="g-nav-w" data-nav data-nav-scroll-class="w-variant-x" data-nav-scroll-deep style="position:fixed;top:0"><nav><a class="nav-link" href="#">A</a></nav><div class="nav-flyout"><a class="nav-panel-link" href="#">B</a></div></div><main style="height:3000px"></main>`);
+  await page.addScriptTag({ content: js });
+  await page.mouse.wheel(0, 400);
+  await expect(page.locator('.nav-link')).toHaveClass(/w-variant-x/);
+  await expect(page.locator('.nav-panel-link')).not.toHaveClass(/w-variant-x/);
+});
+
 test('case study bars take their width from data-bar-ratio', async ({ page }) => {
   await page.setContent(`<style>${css}.f{width:50%;height:4px}</style><div style="width:200px"><div class="f" data-bar-ratio="46"></div><div class="f" data-bar-ratio="abc"></div><div class="f" data-bar-ratio="140"></div></div>`);
   await page.addScriptTag({ content: js });
