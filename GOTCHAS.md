@@ -25,6 +25,24 @@ collected from client repos into those files.
 
 ## This project
 
+### 2026-10-15 · Turning a component variant on from JS; a border that flashes black
+- Area: designer
+- Scope: template-candidate
+- Symptom: adding the Light variant's class to G | Nav W on scroll turned
+  the bar light but left the links white; then the new bottom border
+  flashed black before fading to the light grey.
+- Cause: Webflow puts a variant's class (`w-variant-<id>`) on every element
+  the variant styles, with compound selectors (`.nav-link.w-variant-…`),
+  not descendant ones. And a border with no colour set is `currentColor`
+  (dark here), so `transition: border-color` animates from it.
+- Fix: nav.ts adds the class to the wrapper and, with
+  `data-nav-scroll-deep`, to everything in the bar; the class name sits in
+  `data-nav-scroll-class` in Webflow, not in the code. The base bar has
+  `border-bottom: 1px solid transparent`, so the variant's border fades
+  from transparent.
+- Status: fixed (Webflow and e64cbc7, 2026-10-15)
+- Found by: human
+
 ### 2026-10-15 · The Webflow nav root had no data-nav
 - Area: designer
 - Scope: project
