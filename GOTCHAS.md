@@ -25,6 +25,21 @@ collected from client repos into those files.
 
 ## This project
 
+### 2026-10-15 · Conditional visibility without the Designer: a Switch field
+- Area: mcp
+- Scope: template-candidate
+- Symptom: new template elements (a middle breadcrumb level, an optional
+  intro) needed "show when field is set"; the Designer tab was unresponsive.
+- Cause: the API binds visibility only to Switch fields; "is set" on a text
+  field is Designer-only.
+- Fix: a Switch next to the text field ("Has Breadcrumb Parent", "Has
+  Capabilities Intro"), set per item through the API, and `set_visibility`
+  with a CMS binding to it. Costs an extra field for editors to tick; the
+  help text says so. Also: Link fields accept relative URLs (`/#industries`),
+  and a Heading's or Link's text binds through `set_settings` key `text`.
+- Status: workaround confirmed (Services Template, 2026-10-15)
+- Found by: claude
+
 ### 2026-10-15 · An invisible script-hidden overlay blocks the Designer canvas
 - Area: designer
 - Scope: template-candidate

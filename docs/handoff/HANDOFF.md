@@ -150,6 +150,23 @@ portrait and Macs; iPad Pro 13" (1032) and iPad landscape squeeze the
 desktop layout (footer email, Home case facts and industry tiles, article
 column, assessment form): open, a 1100px layout step proposed.
 
+2026-10-15 (later) — **Links, iPad layouts, copy fixes.** Nav Case Studies
+→ `/case-studies`; every footer link points at its page (socials still
+`#`, no URLs yet). 992–1279px gets a roomier layout (footer 3 columns,
+featured case halves with stacked facts, industries 2 columns, lead CTA and
+article stacked, author posts 2 columns, story halves); the 1280 breakpoint
+holds the full desktop layout. Copy audit against the doc and keyword map:
+all 23 map pages live at their slugs, meta matches. Fixed: technology card
+title per page (Services › Tech Title), the three missing capabilities
+intros (Capabilities Intro + Has Capabilities Intro), the doc's three-level
+breadcrumbs (Breadcrumb Parent, Breadcrumb Parent Link, Has Breadcrumb
+Parent), Home's View All Case Studies and Read Our Research links. Still
+open: Home Testimonials (in the doc, not in the confirmed design), Home
+FAQ answers, Explore Industries on Home (no industries page), the doc's
+`/contact` CTA target. Prototype only, awaiting review: Careers, Privacy,
+Terms, Accessibility, HTML Sitemap, 404, Contact (`scripts/gen-pages.py`).
+Legal copy is a general template for the client's lawyer to review.
+
 ## Ground rules for this project
 
 - Prototype first (wf-template workflow): the design is built and
