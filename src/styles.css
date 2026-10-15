@@ -635,9 +635,12 @@ html.is-loading body {
 /* repo-css: js-state — src/modules/nav.ts shows the mobile menu: it drops
    `hidden`, adds .is-open a frame later (fade in, rows rise in turn) and
    locks the page scroll with html.is-menu-open. Layout and colours are the
-   Mobile Menu classes in the Designer. */
+   Mobile Menu classes in the Designer. Closed, it lets the pointer through:
+   the Designer canvas runs no script, so the menu is never `hidden` there
+   and would sit invisibly over the page below 992px, catching every click. */
 .mobile-menu[hidden] { display: none; }
 .mobile-menu { opacity: 0; transition: opacity 320ms ease; }
+.mobile-menu:not(.is-open) { pointer-events: none; }
 .mobile-menu.is-open { opacity: 1; }
 .mobile-menu-item,
 .mobile-menu-foot { opacity: 0; transform: translateY(0.75rem); transition: opacity 320ms ease, transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1); }
