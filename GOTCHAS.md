@@ -25,6 +25,27 @@ collected from client repos into those files.
 
 ## This project
 
+### 2026-10-16 · Nested Collection Lists: source by API, Show defaults to 5
+- Area: mcp
+- Scope: template-candidate
+- Symptom: the Home service-card tags (a nested list of the Services ›
+  Home Tags multi-reference) published 5 tags per card, where cards have
+  up to 7. `get_settings` read `limit: 100` the whole time.
+- Cause: a new nested list gets Show = 5 in the Designer, and the API's
+  read-back doesn't report it. Webflow allows up to 100 nested items
+  (Kajal), so it isn't a platform cap.
+- Fix: `set_settings` key `limit` with an explicit value (20 here), then
+  check the published HTML. Also learnt: `source` as
+  `{"collectionId": <referenced collection>, "fieldId": <multi-ref field>}`
+  binds the nested list to the parent item's field, although the read-back
+  shows only `collectionId` (the Designer shows "Home Tags"). A link to a
+  referenced item's page (Collection page › References › Page) is a
+  Designer step. A new collection appears in the Designer's Pages panel
+  only after a reload; switch its template's publish toggle off there.
+  Don't add a second offset list to get past "5": check Show first.
+- Status: fixed (Webflow, 2026-10-16)
+- Found by: human
+
 ### 2026-10-16 · A Link Block with a negative margin is capped by Webflow's max-width: 100%
 - Area: designer
 - Scope: template-candidate

@@ -246,6 +246,15 @@ sitemap, article assessment button, 29 links in 18 article bodies).
 Testimonials stay hidden on Home (Kajal). A Barba/Lenis pixel page
 transition was tried in the prototype and removed.
 
+2026-10-16 (evening) — **Service tags and favicon.** The doc's TAGS lines are
+on the Home service cards: new CMS collection Service Tags (23 items, Name +
+Page reference to Services; template unpublished), Services › Home Tags
+(multi-reference, in the doc's order), a nested list in the card (Tag Row,
+chips Tag › Is Outline › Is Link with an accent hover, each linking to its
+Page). Tags without a page of their own link to the closest service (e.g.
+Ad Creative, Landing Pages → PPC). Favicon and webclip are the old site's
+icon (`../Assets/favicon-old-site/`), set in Site settings › General.
+
 ## Ground rules for this project
 
 - Prototype first (wf-template workflow): the design is built and
