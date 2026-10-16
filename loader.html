@@ -49,11 +49,6 @@ published.
 <meta property="og:site_name" content="SEO Team Toronto" />
 <meta property="og:locale" content="en_CA" />
 
-<!-- Two lines on purpose: a stylesheet fetch and its font fetches are
-     CORS-different and open separate connections. -->
-<link rel="preconnect" href="https://cdn.jsdelivr.net" />
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-
 <script>
   (function () {
     var RELEASE = null; // the release tag, e.g. "1.0.0" — the only version string
@@ -73,6 +68,18 @@ published.
       : STAG;
     if (!staging && !RELEASE)
       console.error("[wfc] RELEASE is not set in head code; serving the staging bundle. Tag a release and set RELEASE before launch.");
+    // Warm the connection to wherever the bundle comes from: GitHub Pages
+    // on staging, jsDelivr with a RELEASE, localhost in dev mode. A fixed
+    // jsDelivr preconnect was unused on staging (PageSpeed flagged it) and
+    // the stylesheet's own connection cost ~0.8 s on mobile. One plain
+    // preconnect: the stylesheet and script are no-cors fetches, and the
+    // bundle loads no fonts.
+    var bundle = flag ? DEV : staging ? STAG : prod;
+    var warm = document.createElement("link");
+    warm.rel = "preconnect";
+    warm.href = new URL(bundle).origin;
+    document.head.appendChild(warm);
+
     // Shared config — the Embed, the footer loader and the bundle read this.
     window.WFC = {
       staging: staging, dev: flag, devBase: DEV, stag: STAG,
