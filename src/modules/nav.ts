@@ -30,12 +30,26 @@ export function initNav() {
 
   initDropdowns();
   initScrollTheme();
+  initNavHeight();
 
   const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
   if (!toggle) return;
   const panel = document.querySelector<HTMLElement>('[data-mobile-menu]');
   if (panel) initMobileMenu(toggle, panel);
   else initDropdownMenu(toggle);
+}
+
+// --nav-h on <html> follows the fixed bar's measured height, so anchored
+// sections stop with their top edge on the bar's bottom edge
+// (html { scroll-padding-top: var(--nav-h) }, repo-css). Measured, not read
+// from the Webflow variable: that one is in em of the scaled body size,
+// which <html> doesn't have.
+function initNavHeight() {
+  const bar = document.querySelector<HTMLElement>('[data-nav]');
+  if (!bar) return;
+  const set = () => document.documentElement.style.setProperty('--nav-h', `${Math.round(bar.offsetHeight)}px`);
+  new ResizeObserver(set).observe(bar);
+  set();
 }
 
 function initScrollTheme() {
@@ -165,7 +179,11 @@ function initFlyout(nav: HTMLElement, pairs: Pair[], flyout: HTMLElement, card: 
   const fit = () => {
     if (!current) return;
     const border = card.offsetHeight - card.clientHeight;
-    card.style.height = `${current.panel.offsetHeight + border}px`;
+    // The panel stretches to the card and its top part may be squeezed while
+    // the card animates (the footer bar stays on the bottom edge), so the
+    // target is the children's full content height, not the panel's box.
+    const content = [...current.panel.children].reduce((h, el) => h + el.scrollHeight, 0);
+    card.style.height = `${content + border}px`;
   };
   const resize = new ResizeObserver(fit);
 
@@ -176,7 +194,7 @@ function initFlyout(nav: HTMLElement, pairs: Pair[], flyout: HTMLElement, card: 
     const { button, panel } = current;
     button.setAttribute('aria-expanded', 'false');
     panel.classList.remove('is-active');
-    resize.unobserve(panel);
+    resize.disconnect();
     card.style.height = '0px';
     curtain?.classList.remove('is-visible');
     if (returnFocus) button.focus({ preventScroll: true });
@@ -198,7 +216,7 @@ function initFlyout(nav: HTMLElement, pairs: Pair[], flyout: HTMLElement, card: 
     if (current) {
       current.button.setAttribute('aria-expanded', 'false');
       current.panel.classList.remove('is-active');
-      resize.unobserve(current.panel);
+      resize.disconnect();
     } else {
       flyout.classList.add('is-open');
       curtain?.classList.add('is-open');
@@ -208,7 +226,7 @@ function initFlyout(nav: HTMLElement, pairs: Pair[], flyout: HTMLElement, card: 
     current = pair;
     pair.button.setAttribute('aria-expanded', 'true');
     pair.panel.classList.add('is-active');
-    resize.observe(pair.panel);
+    [...pair.panel.children].forEach((el) => resize.observe(el));
     fit();
   };
   let closeQueued = false;

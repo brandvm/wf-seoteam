@@ -55,7 +55,9 @@
   --ease-bbs: cubic-bezier(0.64, 0.05, 0, 1);
   --dur-bbs: 800ms;
 
-  /* Set this to the fixed header height when the navigation is built. */
+  /* The fixed header's height: src/modules/nav.ts measures the bar and sets
+     it on <html>, so anchored sections stop with their top edge on the
+     bar's bottom edge (§06 scroll-margin-top). */
   --nav-h: 0rem;
 
   /* Underline effect */
@@ -88,8 +90,10 @@
    Desktop: 1em = --size-unit px at the design frame (--size-container-ideal,
    no unit); it grows with the viewport up to --size-container-max and
    shrinks down to --size-container-min, holding from there to 992px.
-   This project: frame 1680, scaling 1440–1920 (set by Kajal, 2026-10-12),
-   so 1em runs from 13.71px to 18.29px.
+   This project: frame 1680, scaling 1440–1920 (set by Kajal, 2026-10-12).
+   2026-10-16 (Kajal): desktop shown at 90%, as if the browser were zoomed
+   out: the ideal is 1867 (= 1680 / 0.9), so 1em runs from 12.34px to
+   16.46px (14.4px at 1680). Tablet and phone unchanged.
    Tablet and mobile (991px and below): a fixed 1rem; the variables'
    breakpoint modes do the resizing there. Set ideal/min/max to the design
    before the prototype (webflow-build › checklists › Before the
@@ -97,7 +101,7 @@
    a body font-size in the Designer: this rule wins and the Designer value
    would be a hidden no-op. */
 :root {
-  --size-container-ideal: 1680;
+  --size-container-ideal: 1867;
   --size-container-min: 1440px;
   --size-container-max: 1920px;
   --size-container: clamp(var(--size-container-min), 100vw, var(--size-container-max));
@@ -679,12 +683,32 @@ html.is-menu-open { overflow: hidden; }
 .nav-link[data-nav-dropdown] .icon { transition: transform 200ms ease; }
 .nav-link[aria-expanded="true"] .icon { transform: rotate(180deg); }
 @media screen and (max-width: 991px) { .nav-flyout.is-open, .nav-curtain.is-open { display: none; } }
+/* The Nav Panel fills the card (Designer: bottom 0, flex column; its footer
+   bar has margin-top auto), so the bar rides the card's height animation;
+   switching panels crossfades the bar's text and links (2026-10-16). */
+.nav-panel .nav-panel-foot > * { opacity: 0; transition: opacity 140ms ease; }
+.nav-panel.is-active .nav-panel-foot > * { opacity: 1; transition: opacity 280ms ease 80ms; }
 
-/* repo-css: designer-cant — child style on parent hover: the photo in the
-   Services dropdown's consultant card zooms while the card is hovered. */
+/* repo-css: designer-cant — child styles on parent hover: a texture card's
+   photo zooms and its chip fills; a service row's arrow shows. */
 .nav-panel-card:hover .nav-panel-card-img { transform: scale(1.04); }
+.nav-panel-card:hover .nav-panel-card-chip { background-color: rgb(255 255 255 / 0.18); }
+.nav-panel-link.is-panel-row:hover .nav-panel-link-arrow,
+.nav-panel-link.is-panel-row:focus-visible .nav-panel-link-arrow { opacity: 1; transform: translateX(0.125em); }
+
+/* repo-css: designer-cant — the Nav Curtain sits behind the bar's
+   background (Kajal, 2026-10-16). The curtain is a child of G | Nav W,
+   which is a stacking context, so it can't go under the wrapper's own
+   background; a ::before copies the wrapper's background and bottom border
+   (inherit, so the Light variant and the scrolled state carry over) above
+   the curtain, and the bar and flyout sit above that. A transparent bar
+   shows the blurred page through it as before. Desktop only. */
+@media screen and (min-width: 992px) {
+  .g-nav-w::before { content: ""; position: absolute; left: 0; top: 0; right: 0; bottom: 0; z-index: 1; box-sizing: border-box; background: inherit; border-bottom: inherit; pointer-events: none; }
+  .g-nav-w > .g-nav, .g-nav-w > .nav-flyout { z-index: 2; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .nav-curtain, .nav-flyout-card, .nav-panel, .nav-panel :is(.nav-panel-label, .nav-panel-list > *, .nav-panel-more, .nav-panel-card), .nav-panel-card-img { transition: none !important; }
+  .nav-curtain, .nav-flyout-card, .nav-panel, .nav-panel :is(.nav-panel-label, .nav-panel-list > *, .nav-panel-more, .nav-panel-card), .nav-panel-card-img, .nav-panel-foot > * { transition: none !important; }
 }
 
 /* ---- Case studies (2026-10-15) ---- */
