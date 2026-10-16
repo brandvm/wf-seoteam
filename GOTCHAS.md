@@ -25,6 +25,23 @@ collected from client repos into those files.
 
 ## This project
 
+### 2026-10-16 · A Link Block with a negative margin is capped by Webflow's max-width: 100%
+- Area: designer
+- Scope: template-candidate
+- Symptom: the rebuilt nav dropdown on staging wrapped six service
+  descriptions onto two lines; the prototype wrapped two. Every grid,
+  gap, padding and font size measured the same.
+- Cause: Webflow publishes Link Blocks with `w-inline-block`
+  (`max-width: 100%`). The rows use `margin-left: -1em` so their hover box
+  lines up with the label; in the prototype the row grows 1em wider than
+  its column, in Webflow the cap keeps it at 100% and the text loses 1em.
+- Fix: `max-width: none` on the row combo (Nav Panel Link › Is Panel Row).
+  Any Link Block that bleeds with a negative margin needs the same. When a
+  Webflow build wraps differently from the prototype, compare the element's
+  computed max-width before anything else.
+- Status: fixed (Webflow, 2026-10-16)
+- Found by: claude
+
 ### 2026-10-16 · Styling links inside CMS rich text: nested styles are Designer-only
 - Area: designer
 - Scope: template-candidate

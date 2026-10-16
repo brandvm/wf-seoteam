@@ -233,6 +233,19 @@ transition. Open: favicon and webclip still
 Webflow's defaults, share images on articles and cases are WebP (LinkedIn
 may not show them).
 
+2026-10-16 (later) — **Dropdowns, scale, contact links** (Kajal). Desktop
+renders at 90% (`--size-container-ideal` 1867; 1em = 14.4px at 1680),
+tablet and phone unchanged. Services and Industries dropdowns rebuilt from
+the prototype: rule labels, arrow rows, four texture cards on Services,
+cream footer bar with links (View All Services / All Industries, Speak With
+a Consultant); the bar stays on the card's bottom edge while the height
+animates and crossfades between panels; the blur curtain sits behind the
+bar's background. Anchors stop on the bar's bottom edge (nav.ts measures
+--nav-h). Every contact CTA goes to `/contact` (nav, footer, heroes, 404,
+sitemap, article assessment button, 29 links in 18 article bodies).
+Testimonials stay hidden on Home (Kajal). A Barba/Lenis pixel page
+transition was tried in the prototype and removed.
+
 ## Ground rules for this project
 
 - Prototype first (wf-template workflow): the design is built and
