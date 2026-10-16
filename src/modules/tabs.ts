@@ -52,6 +52,13 @@ export function initTabs() {
         tab.setAttribute('aria-controls', panel.id);
         panel.setAttribute('role', 'tabpanel');
         panel.setAttribute('aria-labelledby', tab.id);
+        // The panels' own CMS list: a role="list" around tabpanels is a list
+        // with no list items (Lighthouse: ARIA roles missing required
+        // children), so its wrappers become presentation too.
+        for (let el = panel.parentElement; el && el !== root; el = el.parentElement) {
+          const role = el.getAttribute('role');
+          if (role === 'list' || role === 'listitem') el.setAttribute('role', 'presentation');
+        }
       }
       tab.setAttribute('role', 'tab');
       tab.querySelectorAll('[data-tabs-number]').forEach((el) => { el.textContent = String(i + 1).padStart(2, '0'); });

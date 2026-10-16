@@ -90,7 +90,7 @@ test('tabs and panels from CMS lists pair by position, get ids and numbers', asy
   // Two Collection Lists: no ids, no aria-controls, every panel visible.
   await page.setContent(`<div data-tabs>
     <div class="w-dyn-items" role="list">${[1, 2, 3].map((n) => `<div class="w-dyn-item" role="listitem"><button type="button" data-tabs-tab><span data-tabs-number></span>Tab ${n}</button></div>`).join('')}</div>
-    <div class="w-dyn-items">${[1, 2, 3].map((n) => `<div class="w-dyn-item"><div data-tabs-panel><span data-tabs-step></span>Panel ${n}</div></div>`).join('')}</div></div>`);
+    <div class="w-dyn-items" role="list">${[1, 2, 3].map((n) => `<div class="w-dyn-item" role="listitem"><div data-tabs-panel><span data-tabs-step></span>Panel ${n}</div></div>`).join('')}</div></div>`);
   await page.addScriptTag({ content: js });
   const tabs = page.locator('[data-tabs-tab]');
   const panels = page.locator('[data-tabs-panel]');
@@ -102,6 +102,9 @@ test('tabs and panels from CMS lists pair by position, get ids and numbers', asy
   const controls = await tabs.nth(1).getAttribute('aria-controls');
   expect(controls).toBe(await panels.nth(1).getAttribute('id'));
   await expect(page.locator('[role="tablist"] [role="presentation"] [role="tab"]')).toHaveCount(3);
+  // No list role left around the panels (ARIA: a list must hold list items).
+  await expect(page.locator('[data-tabs] [role="list"], [data-tabs] [role="listitem"]')).toHaveCount(0);
+  await expect(page.locator('[role="tabpanel"]')).toHaveCount(3);
   await tabs.nth(2).click();
   await expect(panels.nth(2)).toBeVisible();
   await expect(panels.nth(0)).toBeHidden();
