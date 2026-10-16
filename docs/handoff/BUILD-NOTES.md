@@ -31,9 +31,12 @@ who approved them.
 Every old URL → its closest new page. Source: the live seoteamtoronto.ca
 sitemap (2026-10-15: `/`, `/about-us`, `/contact`, 11 services, 12 case
 studies, 36 blog posts) and the CMS exports in `../Assets/reference/`.
-Unchanged paths need no rule: `/`, `/contact` and the nine service slugs that
-exist on the new site. Set these in Site settings › Publishing › 301
-redirects before the domain moves (the regex row is one rule).
+Unchanged paths need no rule: `/`, `/contact`, `/blog`, every `/blog/<slug>`
+that is still published, and the nine service slugs that exist on the new
+site. Set these in Site settings › Publishing › 301 redirects before the
+domain moves. The blog keeps
+the old site's URLs (`/blog`, `/blog/<slug>`; Kajal, 2026-10-16), so posts need
+no rule; only the three removed articles redirect, to their service pages.
 
 | Old URL | New URL | Status |
 | --- | --- | --- |
@@ -54,14 +57,13 @@ redirects before the domain moves (the regex row is one rule).
 | `/blog/seo-for-real-estate-agents` | `/services/real-estate-seo-agency` (article removed, client 2026-10-16) | 301 |
 | `/blog/seo-for-dentists` | `/services/dental-seo-agency` (article removed, client 2026-10-16) | 301 |
 | `/blog/seo-for-lawyers` | `/services/law-firm-seo-agency` (article removed, client 2026-10-16) | 301 |
-| `/blog` | `/research` | 301 |
-| `/blog/(.*)` | `/research/%1` (all 39 posts kept their slugs) | 301 |
 
 ## Known issues
 
 ### Fix before launch
 
-- <issue> · <owner>
+- Enter the redirect map above in Site settings › Publishing › 301 redirects (the API can't write redirects); test each old URL on the live domain afterwards · Kajal
+- Client notes (2026-10-16): the AI page moved (`/services/ai-readiness` → `/services/generative-engine-optimization`); the three blog articles for real estate, dentists and lawyers are removed and redirect to their service pages. Done on staging: articles unpublished (drafts, not deleted), four links in other articles repointed · Claude
 
 ### Fix after launch
 

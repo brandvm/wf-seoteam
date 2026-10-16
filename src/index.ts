@@ -12,6 +12,7 @@ import { initNav } from './modules/nav';
 import { initPanelShader } from './modules/panel-shader';
 import { initCaseVisuals } from './modules/case-visuals';
 import { initCardCursor } from './modules/card-cursor';
+import { initHubspotForm } from './modules/hubspot-form';
 import { initMarquee } from './modules/marquee';
 import { initParallax } from './modules/parallax';
 import { initRankMap } from './modules/rank-map';
@@ -52,6 +53,7 @@ function boot() {
   run('parallax', initParallax);
   run('rank-map', initRankMap);
   run('marquee', initMarquee);
+  run('hubspot-form', initHubspotForm);
   // Last: Finsweet starts after the other modules have set their attributes.
   run('finsweet-loader', initFinsweetLoader);
   // Add project feature initializers here: run('<name>', init<Name>);

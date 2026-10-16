@@ -856,6 +856,12 @@ html.is-menu-open { overflow: hidden; }
 [data-marquee].is-marquee:focus-within,
 [data-marquee].is-marquee-paused { animation-play-state: paused; }
 
+/* repo-css: js-state — HubSpot form host (Webflow class Hubspot Form holds
+   min-height: 25em so the card doesn't jump while HubSpot's script loads);
+   hubspot-form.ts adds .is-ready once the form is in, and the iframe then
+   sets the height. */
+.hubspot-form.is-ready { min-height: 0; }
+
 /* ---- Service template (2026-10-14) ---- */
 
 /* repo-css: designer-cant — child styles on parent hover, and nth-child:

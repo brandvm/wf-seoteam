@@ -25,6 +25,30 @@ collected from client repos into those files.
 
 ## This project
 
+### 2026-10-16 · HubSpot form with CAPTCHA: embed only, in an iframe, re-rendered by React
+- Area: js
+- Scope: template-candidate
+- Symptom: the plan was the designed Webflow form posting to HubSpot's
+  Forms API. The client's form has CAPTCHA on, which the v2/v3 submit
+  endpoints refuse (HubSpot community; v2 docs). The embed (v2.js) then
+  rendered the themed form inside an iframe, so page CSS couldn't reach
+  it; the placeholders and button added in `onFormReady` vanished.
+- Cause: themed HubSpot forms render in a srcless (same-origin) iframe;
+  the form is a React app that re-renders after `onFormReady` and may
+  replace the form element passed to it. HubSpot's theme selectors
+  (`.hs-input:not([type=file])`, `.hs-form-field input[type=…]`) beat
+  plain class rules.
+- Fix: `src/modules/hubspot-form.ts` loads the embed near the viewport,
+  writes the design's CSS into the iframe (every declaration
+  `!important`, sizes in rem with the iframe root set to the card's font
+  size), and re-applies its changes (placeholders from labels, our button
+  that clicks HubSpot's hidden submit, the note, the reCAPTCHA disclosure)
+  from a MutationObserver, always on the live `form.hs-form`. Test with
+  headless Playwright: a hidden browser pane never fires
+  IntersectionObserver.
+- Status: fixed in the repo and Webflow (2026-10-16); visual polish later (Kajal)
+- Found by: claude
+
 ### 2026-10-16 · Imported divs reject conditional visibility; lists can't sit in links
 - Area: mcp
 - Scope: template-candidate
