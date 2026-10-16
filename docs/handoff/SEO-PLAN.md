@@ -5,6 +5,19 @@ done yet. Rule of thumb, as for CSS: whatever Webflow does natively stays in
 Webflow (page settings, CMS bindings); only what it can't do goes into
 custom code, and that code is kept here in the repo as the source of truth.
 
+> **Update 2026-10-15 (MCP reconnected):** the pages tool now writes a page's
+> JSON-LD (`jsonLdSchema`, also on CMS templates) and its Open Graph image
+> (`openGraph.imageAssetId`), so steps 3 and 6 need no Designer pasting.
+> Done: Contact noindex removed; Open Graph copies the SEO title and
+> description on every page.
+>
+> **Update 2026-10-16:** steps 3 and 6 done on staging and checked on all 88
+> pages (HANDOFF 2026-10-16). Template schema with CMS fields turned out to
+> be Designer-only (GOTCHAS). Confirmed by Kajal: phone (416) 360-3434,
+> domain `https://www.seoteamtoronto.ca`. Still to do: step 5 (site-wide head
+> tags in `loader.html`), step 7 (`wf:seo` check), step 4 at launch;
+> socials for `sameAs` when the URLs exist.
+
 ## What staging outputs today (checked 2026-10-15 with curl)
 
 | Tag | Webflow does it? | Now |
@@ -118,7 +131,9 @@ Rich Results Test on one page of each type.
 - Social profile URLs and the X handle (footer socials are still `#`).
 - Production domain (www or apex) for canonicals.
 - Approve the default OG image and the drafted meta copy.
-- Contact page: stays `noindex`?
+- ~~Contact page: stays `noindex`?~~ Decided 2026-10-15 (Kajal): remove the
+  `noindex` from /contact (step 1: find whether it sits in the page head
+  code or the page's SEO setting, remove it, publish, check the tag is gone).
 
 ## Order
 1 → 2 (approval) → 3 → 5 → 6 (approval of the JSON-LD files) → publish →

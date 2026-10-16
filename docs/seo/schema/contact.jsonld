@@ -1,0 +1,18 @@
+{
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "@id": "https://www.seoteamtoronto.ca/contact#webpage",
+  "url": "https://www.seoteamtoronto.ca/contact",
+  "name": "Contact | SEO Team Toronto",
+  "isPartOf": { "@id": "https://www.seoteamtoronto.ca/#website" },
+  "about": { "@id": "https://www.seoteamtoronto.ca/#organization" },
+  "mainEntity": {
+    "@type": "ContactPoint",
+    "contactType": "sales",
+    "telephone": "+1-416-360-3434",
+    "email": "info@seoteamtoronto.ca",
+    "areaServed": "CA",
+    "availableLanguage": "English",
+    "hoursAvailable": { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "09:00", "closes": "18:00" }
+  }
+}

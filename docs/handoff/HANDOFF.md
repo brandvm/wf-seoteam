@@ -196,6 +196,38 @@ already from the client's list; showing all 23 needs a marquee (design
 change, not made). Redirect map for the old URLs in BUILD-NOTES. Service-page
 FAQs (64 on the old site) not used, per Kajal.
 
+2026-10-15 (late night) — **Final copy with internal links** (client doc,
+`../Assets/reference/final-copy-internal-links/`, parsed to
+`../Assets/reference/final-copy.json`). Page text unchanged except the Home
+H1 ("Research-Based Toronto SEO Agency") and E-commerce's second list (two
+paragraphs). On staging: 147 FAQs from the doc (10 on Home, 5–10 per service
+and industry page; the old-site answers deleted, Kajal), a new FAQ section on
+the Services Template (Home's design, FAQs › Service reference, filter
+Service = Current Service), ~180 in-copy links through new rich-text fields
+(Services: Intro Rich, Capabilities Intro Rich, Second List Text Rich, Tab
+Summary Rich; Capabilities: Body Rich) and the two static Home phrases;
+"Speak With a Consultant" → `/contact` (Home, template hero, FAQ sections,
+mobile menu). Contact is indexable again; Open Graph copies the SEO fields
+on every page. Open: the in-copy link style (prototype
+`src/css/new-classes-links.css`, awaiting Kajal), the Home service-tab TAGS
+lists (not in the design), nav Contact / Get a Quote / footer Contact still
+`/#contact`, the old PlainText fields (keep or delete), schema and OG image
+(SEO-PLAN).
+
+2026-10-16 — **Schema and share images on staging** (Kajal: the 416 number,
+`https://www.seoteamtoronto.ca`, link style approved). JSON-LD on Home
+(ProfessionalService + WebSite), About, Contact, /research, /case-studies,
+/industries (API), and on the Services, Research, Case Studies and Authors
+templates (typed in the Designer with CMS field tokens; GOTCHAS). Sources in
+`docs/seo/schema/`. Open Graph image: the default 1200×630 card on static
+pages and the Services Template; Research → Image, Case Studies → Photo,
+Authors → Photo. Checked after publishing on all 88 pages: every JSON-LD
+block parses, no empty values or HTML entities, ISO dates, og:image on every
+page. No schema, as planned: legal pages, Sitemap, Careers. Open: the
+in-copy link style in the Designer (approved), favicon and webclip still
+Webflow's defaults, share images on articles and cases are WebP (LinkedIn
+may not show them).
+
 ## Ground rules for this project
 
 - Prototype first (wf-template workflow): the design is built and

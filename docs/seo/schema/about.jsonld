@@ -1,0 +1,12 @@
+{
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "@id": "https://www.seoteamtoronto.ca/about#webpage",
+  "url": "https://www.seoteamtoronto.ca/about",
+  "name": "About SEO Team | Toronto SEO & AI Search Agency",
+  "isPartOf": { "@id": "https://www.seoteamtoronto.ca/#website" },
+  "about": { "@id": "https://www.seoteamtoronto.ca/#organization" },
+  "breadcrumb": { "@type": "BreadcrumbList", "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.seoteamtoronto.ca/" },
+    { "@type": "ListItem", "position": 2, "name": "About", "item": "https://www.seoteamtoronto.ca/about" } ] }
+}

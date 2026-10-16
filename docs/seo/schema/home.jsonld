@@ -1,0 +1,63 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ProfessionalService",
+      "@id": "https://www.seoteamtoronto.ca/#organization",
+      "name": "SEO Team Toronto",
+      "alternateName": "SEO Team",
+      "url": "https://www.seoteamtoronto.ca/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://cdn.prod.website-files.com/6ac957e7969f378f0b1984fd/6ad23643fbfcdf71aff20104_logo-seo-team-600.png",
+        "width": 600,
+        "height": 266
+      },
+      "image": "https://cdn.prod.website-files.com/6ac957e7969f378f0b1984fd/6ad23643f1ee0a76e9775ccd_og-default.jpg",
+      "description": "SEO Team is a Toronto SEO agency built on original research into Google and AI search. Senior consultants, clear strategy and measurable growth.",
+      "telephone": "+1-416-360-3434",
+      "email": "info@seoteamtoronto.ca",
+      "priceRange": "$2,500+ CAD per month",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "60 Bloor St W, Suite 401",
+        "addressLocality": "Toronto",
+        "addressRegion": "ON",
+        "postalCode": "M4W 3B8",
+        "addressCountry": "CA"
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ],
+        "opens": "09:00",
+        "closes": "18:00"
+      },
+      "areaServed": [
+        {
+          "@type": "City",
+          "name": "Toronto"
+        },
+        {
+          "@type": "Country",
+          "name": "Canada"
+        }
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.seoteamtoronto.ca/#website",
+      "url": "https://www.seoteamtoronto.ca/",
+      "name": "SEO Team Toronto",
+      "inLanguage": "en-CA",
+      "publisher": {
+        "@id": "https://www.seoteamtoronto.ca/#organization"
+      }
+    }
+  ]
+}

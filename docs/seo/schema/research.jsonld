@@ -1,0 +1,12 @@
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": "https://www.seoteamtoronto.ca/research#webpage",
+  "url": "https://www.seoteamtoronto.ca/research",
+  "name": "SEO & AI Search Research and Insights | SEO Team Toronto",
+  "isPartOf": { "@id": "https://www.seoteamtoronto.ca/#website" },
+  "publisher": { "@id": "https://www.seoteamtoronto.ca/#organization" },
+  "breadcrumb": { "@type": "BreadcrumbList", "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.seoteamtoronto.ca/" },
+    { "@type": "ListItem", "position": 2, "name": "Research", "item": "https://www.seoteamtoronto.ca/research" } ] }
+}

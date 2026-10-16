@@ -25,6 +25,68 @@ collected from client repos into those files.
 
 ## This project
 
+### 2026-10-16 · Template JSON-LD with CMS fields: Designer only
+- Area: mcp
+- Scope: template-candidate
+- Symptom: schema written to a CMS template through
+  `bulk_update_pages_schema_markup` with field tokens published with every
+  bound value empty (`"name": ""`).
+- Cause: the API accepts only valid JSON and stores it parsed, then
+  re-serialises it. Webflow's field token is
+  `{{wf {&quot;path&quot;:&quot;name&quot;,&quot;type&quot;:&quot;PlainText&quot;\} }}`
+  (entities and a bare `\}`), which isn't valid JSON; every escaped form
+  the API takes comes out wrong (`\\}` or `\"`), and the token renders
+  empty. A `<script>`-wrapped string is validated the same way.
+- Fix: static pages through the API (`jsonLdSchema`); templates in the
+  Designer: page settings › Schema markup. What worked: type the whole block
+  as raw text, field tokens included in the form above (types `PlainText`,
+  `ImageRef`, `Date` → ISO, `Link`; reference subfields as
+  `author-profile:name`); the editor turns each token into a chip. Start
+  with `<script type="application/ld+json">` (without it the JSON publishes
+  as bare text in the head) and don't type `</script>`: the editor closes
+  it itself, and a typed one doubles it. Pressing Escape closes the panel
+  and loses unsaved text. The result is stored in `rawJsonLdSchema`,
+  readable through the API. Drafts in `docs/seo/schema/`. Plain fields
+  publish an apostrophe as `&#39;` (valid JSON, wrong text): use ’ in
+  meta copy. Validate every CMS page after a change.
+  Open Graph image on a template: page settings › Open Graph image lists
+  the collection's image fields (Designer only).
+- Status: workaround confirmed (2026-10-16)
+- Found by: claude
+
+### 2026-10-15 · Links inside CMS copy: new rich-text fields and elements, built through the API
+- Area: mcp
+- Scope: template-candidate
+- Symptom: the client's final copy adds ~180 internal links inside running
+  text, but most service copy sat in PlainText fields (Intro, Capabilities
+  Intro, Capability Body, Tab Summary), which can't hold a link.
+- Cause: a field's type can't be changed, and a Paragraph can't bind to a
+  RichText field.
+- Fix: add a RichText companion field per PlainText field ("Intro Rich"…),
+  fill it from the doc (linked version where the text matches, the plain text
+  wrapped in `<p>` otherwise; `prototype/scripts/parse-final-copy.py` parses
+  the Google Docs export with links), then in the template create a
+  `RichText` element next to the paragraph with the same classes
+  (`data_element_builder`), bind `richText` to the new field
+  (`set_settings`), and remove the paragraph. Keep the PlainText fields
+  filled: "is set" visibility conditions still read them. Also learnt:
+  - A RichText built through the API starts with Webflow's sample content
+    (Heading 1…, lorem); the binding replaces it on publish. A Heading built
+    with children keeps a default "Heading" text node: remove it.
+  - Static text with a link: rebuild the paragraph with the WHTML builder
+    (`<p>… <a href>…</a> …</p>`), delete the old one, then remove the custom
+    `href` attribute the importer adds to the new link.
+  - Global links are plain (no underline, inherited colour), so links in
+    copy are invisible until each rich-text class gets a nested
+    "All Links" style in the Designer.
+  - Collection List source/sort/attributes take `static_json` values in
+    the shape `get_settings` returns (`{"collectionId": …}`,
+    `[{"fieldSlug":"order","direction":"ascending"}]`); "Service = Current
+    Service" is still a Designer step.
+- Status: done on Home and the Services Template (2026-10-15); link style
+  pending approval
+- Found by: claude
+
 ### 2026-10-15 · Bulk rich-text content: the Designer's CSV import, not the API
 - Area: mcp
 - Scope: template-candidate
