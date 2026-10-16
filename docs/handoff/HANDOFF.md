@@ -255,6 +255,20 @@ Page). Tags without a page of their own link to the closest service (e.g.
 Ad Creative, Landing Pages → PPC). Favicon and webclip are the old site's
 icon (`../Assets/favicon-old-site/`), set in Site settings › General.
 
+2026-10-16 (night) — **Case studies v2 in Webflow** (Kajal). Content from the
+reference site for all 12 cases; CMS reworked (v1-only fields removed after a
+backup in `../Assets/reference/case-studies-cms-removed-fields-2026-10-16.json`;
+new story/results fields; Case Extras collection for map, keyword, second
+chart and unit grid; Service Tags for Services Delivered; Related Case
+Studies). `/case-studies`: one card list by Page Order, Featured = wide card,
+div cards with an overlay link (nested tag lists can't sit in a link). Case
+Studies Template rebuilt: hero photo with parallax, results band, story,
+supporting results, live MapLibre rank map, outcome recap, three related
+cases; optional blocks hide by field (GOTCHAS). Repo: card-cursor, parallax,
+rank-map (MapLibre as its own bundle, loaded only where a map is),
+count-up text, bars on scroll. Home Industries: static 18-industry grid
+(10 linked), nav Home item and logo link, Get a Quote with chip.
+
 ## Ground rules for this project
 
 - Prototype first (wf-template workflow): the design is built and

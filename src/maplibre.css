@@ -1,0 +1,5 @@
+/* Entry dist/maplibre.css: MapLibre's own stylesheet, added by
+   src/modules/rank-map.ts only on a page with a rank map. Not part of
+   styles.css, so other pages don't load it.
+   repo-css: third-party — MapLibre markup (controls, markers, popups). */
+@import 'maplibre-gl/dist/maplibre-gl.css';

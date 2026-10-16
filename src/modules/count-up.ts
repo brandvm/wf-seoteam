@@ -10,9 +10,39 @@
 // released when the count ends. Thousands get a comma; decimals follow the
 // attribute ("3.1" counts with one decimal). With reduced motion the final
 // value is written at once.
+//
+// [data-count-text] is for values that come from one CMS text field
+// ("+117%", "$25,000", "22 / 30", "−38%"): the first number in the text is
+// wrapped as a [data-count] span between its prefix and suffix, with the full
+// text kept for screen readers. Text without a number ("Hundreds") is left
+// alone, as are ranges ("4–5") and a value already on screen when the page
+// loads (the CMS writes the final text, so counting it would flash the end
+// value first).
 const COUNT_MS = 1600;
 
+function prepareCountText() {
+  document.querySelectorAll<HTMLElement>('[data-count-text]').forEach((el) => {
+    const text = el.textContent ?? '';
+    const m = text.match(/\d[\d,]*(?:\.\d+)?/);
+    if (!m || m.index === undefined || /\d\s*[–-]\s*\d/.test(text)) return; // ranges ("4–5") stay as written
+    const box = el.getBoundingClientRect();
+    if (box.top < innerHeight && box.bottom > 0) return;
+    const number = m[0].replace(/,/g, '');
+    const sr = document.createElement('span');
+    sr.className = 'sr-only';
+    sr.textContent = text;
+    const shown = document.createElement('span');
+    shown.setAttribute('aria-hidden', 'true');
+    const count = document.createElement('span');
+    count.dataset.count = number;
+    count.textContent = '0';
+    shown.append(text.slice(0, m.index), count, text.slice(m.index + m[0].length));
+    el.replaceChildren(sr, shown);
+  });
+}
+
 export function initCountUp() {
+  prepareCountText();
   const items = document.querySelectorAll<HTMLElement>('[data-count]');
   if (!items.length) return;
   const format = (value: number, decimals: number) => value.toLocaleString('en-CA', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });

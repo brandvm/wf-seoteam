@@ -726,6 +726,90 @@ html.is-menu-open { overflow: hidden; }
 .cs-card:hover .cs-card-title { color: var(--_colors---brand--accent-dark); }
 @media (prefers-reduced-motion: reduce) { .cs-card-img { transition: none; } }
 
+/* ---- Case studies v2 (2026-10-16) ----
+   Colours, sizes and radii are written out, not read from Webflow
+   variables (AGENTS.md › CSS policy 4); the comment names the variable a
+   brand colour mirrors. Sizes: 12 = 0.75em, 13 = 0.8125em, 14 = 0.875em;
+   Radius/Pill = 999em, Radius/8 = 0.5em. Everything else on these pages is
+   a Designer class. */
+
+/* repo-css: designer-cant — child styles on parent hover: a case tile's or
+   the featured card's arrow chip fills accent and its image zooms a little
+   while the card is hovered. */
+.cs-tile:hover .cs-tile-arrow,
+.cs-wide:hover .cs-tile-arrow { background-color: #f84c1c; color: #fff; } /* Brand/Accent, Brand/Paper */
+.cs-tile:hover .cs-tile-img,
+.cs-wide:hover .cs-cover-img { transform: scale(1.03); }
+
+/* repo-css: js-state — src/modules/card-cursor.ts moves the CS Cursor label
+   ([data-card-cursor], inside the card) with an inline transform and shows
+   it with .is-visible while a fine pointer is over the card. */
+.cs-cursor { position: absolute; left: 0; top: 0; z-index: 3; display: inline-flex; align-items: center; grid-column-gap: 0.375em; padding: 0.55em 0.85em; border-radius: 999em; background-color: #200f09; color: #fff; font-size: 0.8125em; font-weight: 500; line-height: 1; white-space: nowrap; pointer-events: none; opacity: 0; scale: 0.85; transform-origin: 0 0; transition: opacity 0.18s ease, scale 0.25s cubic-bezier(0.2, 0.7, 0.2, 1); } /* Brand/Ink, Brand/Paper */
+.cs-cursor.is-visible { opacity: 1; scale: 1; }
+
+/* repo-css: js-state — src/modules/case-visuals.ts builds the squares of a
+   unit grid ([data-units-filled][data-units-total] on CS Units) as
+   span.cs-unit (Is Filled, Is On Light); the grid and its key share the
+   look, so they live together here. */
+.cs-units { display: grid; max-width: 30em; grid-template-columns: repeat(10, minmax(0, 1fr)); grid-template-rows: auto; grid-column-gap: 0.375em; grid-row-gap: 0.375em; }
+.cs-units.is-small { max-width: 17em; grid-column-gap: 0.25em; grid-row-gap: 0.25em; }
+.cs-unit { aspect-ratio: 1; background-color: rgb(255 255 255 / 0.18); } /* Paper Tint/Paper 18 */
+.cs-unit.is-filled { background-color: #f84c1c; } /* Brand/Accent */
+.cs-unit.is-on-light { background-color: rgb(32 15 9 / 0.08); } /* Ink Tint/Ink 8 */
+.cs-unit-key { display: flex; flex-wrap: wrap; grid-column-gap: 1.25em; grid-row-gap: 0.25em; margin-top: 1em; color: rgb(255 255 255 / 0.72); font-size: 0.8125em; } /* Paper Tint/Paper 72 */
+.cs-unit-key.is-on-light { color: rgb(32 15 9 / 0.64); } /* Text/Muted (Ink Tint/Ink 64) */
+.cs-unit-key-item { display: inline-flex; align-items: center; grid-column-gap: 0.5em; }
+.cs-unit-swatch { width: 0.625em; height: 0.625em; background-color: #f84c1c; } /* Brand/Accent */
+.cs-unit-swatch.is-empty { background-color: rgb(255 255 255 / 0.24); } /* Paper Tint/Paper 24 */
+.cs-unit-swatch.is-empty.is-on-light { background-color: rgb(32 15 9 / 0.2); } /* Ink Tint/Ink 20 */
+
+/* repo-css: js-state — src/modules/rank-map.ts creates the scan-centre pin
+   and the 25 rank pins (buttons with a number and a tooltip) as MapLibre
+   markers, colours them by band (.is-top / .is-mid / .is-low), replays
+   .is-flip when the rank changes, sets aria-pressed on the Before / After
+   switch and .is-active on the matching count. Tooltips show on the pin's
+   hover and focus (designer-cant: a parent state reaching a child);
+   @keyframes is designer-cant too. Band colours match the legend dots
+   (CS Legend Dot, Designer). */
+.cs-rank-centre { position: relative; z-index: 5; display: flex; flex-direction: column; align-items: center; pointer-events: none; filter: drop-shadow(0 2px 3px rgba(28, 14, 9, 0.35)); }
+.cs-rank-centre-label { position: absolute; bottom: calc(100% + 0.25em); padding: 0.35em 0.85em; border-radius: 999em; background-color: #200f09; color: #fff; font-size: 0.75em; white-space: nowrap; } /* Brand/Ink, Brand/Paper */
+.cs-rank-pin { position: absolute; display: flex; justify-content: center; align-items: center; width: 2.75em; height: 2.75em; padding: 0; border: 3px solid #fff; border-radius: 50%; background-color: #b4503f; color: #fff; font-size: 1em; font-weight: 600; cursor: pointer; transition: background-color 0.35s ease, box-shadow 0.2s ease; } /* border, text: Brand/Paper */
+.cs-rank-pin.is-top { background-color: #2e6a4c; }
+.cs-rank-pin.is-mid { background-color: #c2862a; }
+.cs-rank-pin.is-low { background-color: #b4503f; }
+.cs-rank-pin:hover,
+.cs-rank-pin:focus-visible { z-index: 3; outline: none; box-shadow: 0 0 0 2px #200f09; } /* Brand/Ink */
+@keyframes cs-rank-flip { 0% { opacity: 0; transform: translateY(40%) scale(0.6); } 100% { opacity: 1; transform: none; } }
+.cs-rank-pin.is-flip .cs-rank-num { animation: cs-rank-flip 0.45s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.cs-rank-tip { position: absolute; left: 50%; bottom: calc(100% + 0.6em); display: flex; flex-direction: column; align-items: center; padding: 0.5em 0.75em; border-radius: 0.5em; background-color: #200f09; color: #fff; font-size: 0.8125em; font-weight: 500; line-height: 1.3; white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, 0.3em); transition: opacity 0.15s ease, transform 0.15s ease; } /* Brand/Ink, Brand/Paper */
+.cs-rank-tip small { color: rgb(255 255 255 / 0.72); font-size: 0.85em; font-weight: 400; } /* Paper Tint/Paper 72 */
+.cs-rank-pin:hover .cs-rank-tip,
+.cs-rank-pin:focus-visible .cs-rank-tip { opacity: 1; transform: translate(-50%, 0); }
+.cs-rank-switch { position: absolute; left: 1em; top: 1em; z-index: 4; display: flex; padding: 0.25em; border-radius: 999em; background-color: #fff; box-shadow: 0 0.5em 1.5em -0.5em rgba(28, 14, 9, 0.3); } /* Brand/Paper */
+.cs-rank-switch-btn { padding: 0.5em 1em; border: 0; border-radius: 999em; background-color: transparent; color: rgb(32 15 9 / 0.8); font-size: 0.875em; font-weight: 500; cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease; } /* Text/Secondary (Ink Tint/Ink 80) */
+.cs-rank-switch-btn[aria-pressed="true"] { background-color: #200f09; color: #fff; } /* Brand/Ink, Brand/Paper */
+.cs-metric.is-rank-count.is-active { opacity: 1; }
+.cs-map-side { display: flex; flex-direction: column; grid-row-gap: 2em; }
+@media screen and (max-width: 767px) {
+  .cs-rank-pin { width: 2.1em; height: 2.1em; font-size: 0.8em; border-width: 2px; }
+}
+
+/* repo-css: third-party — the recentre button rank-map.ts adds to
+   MapLibre's control group; !important beats MapLibre's
+   `.maplibregl-ctrl button { display: block }` (dist/maplibre.css, loaded
+   with the map). .is-away (js-state) while the map is moved off the grid. */
+.cs-map-recentre { display: flex !important; justify-content: center; align-items: center; color: #200f09; } /* Brand/Ink */
+.is-away .cs-map-recentre { color: #f84c1c; } /* Brand/Accent */
+
+/* repo-css: designer-cant — prefers-reduced-motion: the cursor label
+   appears without growing; pins and tooltips change without transitions
+   (rank-map.ts also skips the ripple and the flip then). */
+@media (prefers-reduced-motion: reduce) {
+  .cs-cursor { scale: 1; }
+  .cs-rank-pin,
+  .cs-rank-tip { transition: none; }
+}
+
 /* ---- Home testimonials (2026-10-15) ---- */
 
 /* repo-css: designer-cant — hidden scrollbar on the testimonial track

@@ -25,6 +25,67 @@ collected from client repos into those files.
 
 ## This project
 
+### 2026-10-16 · Imported divs reject conditional visibility; lists can't sit in links
+- Area: mcp
+- Scope: template-candidate
+- Symptom: building the v2 Case Studies Template, every Designer
+  "Create conditional" on a div that came from the WHTML importer failed
+  with "[Conflict] The operation could not be applied to the component
+  map", on plain and reference fields alike. Paragraphs from the same
+  import, and divs made with `data_element_builder`, took conditions
+  fine. Separately, a nested Collection List (the card's service tags)
+  was refused inside a whole-card Link Block ("Collection List Wrapper
+  can not be placed in a Link"), and `set_text ""` on a paragraph after
+  adding child spans wiped the spans.
+- Cause: unknown for the import (some state on imported Block elements);
+  the link rule is a Webflow constraint.
+- Fix: for every block that needs a condition, create a builder DivBlock
+  with the same classes before it, `move_element` the children in
+  (bindings are kept), remove the imported div, then set the condition
+  in the Designer. Conditions on a reference's subfields
+  (Extras › Map Lat is set) work on builder divs. Cards that need a
+  nested list are a div card with an absolute overlay Link Block
+  (CS Tile Link, aria-label bound to Name). Clear a paragraph's text
+  before adding spans, never after. Designer selection by script:
+  find Navigator rows / breadcrumb spans by text and click their
+  coordinates; check the breadcrumb before applying a condition (the
+  Navigator scrolls and a stale row selects the wrong element).
+- Status: workaround confirmed (Case Studies v2, 2026-10-16)
+- Found by: claude
+
+### 2026-10-16 · A decorative empty element blows up in the Designer canvas
+- Area: designer
+- Scope: template-candidate
+- Symptom: a 6px dot (empty Div Block, then an empty DOM `span`, both
+  sized by class) showed in the canvas as a ~70px dashed "empty element"
+  placeholder that pushed the text and overlapped the arrows. Published
+  output would have been fine.
+- Cause: the Designer gives any childless element a minimum placeholder
+  size, whatever its tag or class.
+- Fix: build decorative shapes as an inline SVG with a child (`svg`
+  viewBox 0 0 6 6, `fill="currentColor"`, `aria-hidden`, containing a
+  `circle`), sized by the class and coloured with `color`. Checked on the
+  canvas: 5×5px dots. Applies to dots, rules and bars made of empty divs.
+- Status: fixed (Home › Industry Row Dot, 2026-10-16)
+- Found by: human
+
+### 2026-10-16 · Element builder TextBlock: text goes on its String child
+- Area: mcp
+- Scope: template-candidate
+- Symptom: 18 `TextBlock`s built with `data_element_builder` and
+  `set_text` in the schema all came out as "This is some text inside of
+  a div block."; `set_text` on the TextBlock afterwards failed with
+  "This element doesn't support text".
+- Cause: a builder TextBlock is a Block with a String child; the schema's
+  `set_text` is ignored for it and the element tool only writes text to
+  the String.
+- Fix: read the tree back, then `set_text` on each TextBlock's String
+  child id (the TextBlock id with the last hex digit + 1 here; take it
+  from the read-back, don't compute it). Paragraph/Heading built with
+  children have their own default-text trap (2026-10-15 entry).
+- Status: workaround confirmed (Home industries index, 2026-10-16)
+- Found by: claude
+
 ### 2026-10-16 · Nested Collection Lists: source by API, Show defaults to 5
 - Area: mcp
 - Scope: template-candidate

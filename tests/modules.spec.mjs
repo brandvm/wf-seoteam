@@ -305,3 +305,52 @@ test('case study bars take their width from data-bar-ratio', async ({ page }) =>
   const widths = await page.$$eval('.f', (els) => els.map((e) => Math.round(e.getBoundingClientRect().width)));
   expect(widths).toEqual([92, 100, 100]);
 });
+
+test('a unit grid gets its squares from data-units-filled and data-units-total', async ({ page }) => {
+  await page.setContent(`<style>${css}</style><div class="cs-units" data-units-filled="22" data-units-total="30" data-units-tone="light"></div>`);
+  await page.addScriptTag({ content: js });
+  await expect(page.locator('.cs-unit')).toHaveCount(30);
+  await expect(page.locator('.cs-unit.is-filled')).toHaveCount(22);
+  await expect(page.locator('.cs-unit.is-on-light')).toHaveCount(8);
+  await expect(page.locator('.cs-units')).toHaveAttribute('aria-label', '22 of 30');
+});
+
+test('count text below the fold counts its number; ranges and text on screen stay as written', async ({ page }) => {
+  await page.setContent(`<p id="top" data-count-text>+117%</p><p id="range" style="margin-top:3000px" data-count-text>4–5 weeks</p><p id="low" data-count-text>$25,000</p>`);
+  await page.addScriptTag({ content: js });
+  await expect(page.locator('#top')).toHaveText('+117%');
+  await expect(page.locator('#top [data-count]')).toHaveCount(0);
+  await expect(page.locator('#range [data-count]')).toHaveCount(0);
+  await expect(page.locator('#low [data-count]')).toHaveAttribute('data-count', '25000');
+  await expect(page.locator('#low .sr-only')).toHaveText('$25,000');
+  await page.locator('#low').scrollIntoViewIfNeeded();
+  await expect(page.locator('#low [aria-hidden]')).toHaveText('$25,000');
+});
+
+test('the rank map loads MapLibre from next to index.js only where there is a map, and draws 25 pins that switch', async ({ page }) => {
+  const dist = (file) => readFileSync(new URL(`../dist/${file}`, import.meta.url));
+  const before = Array.from({ length: 25 }, (_, i) => 20 - (i % 10)).join(',');
+  const after = Array.from({ length: 25 }, (_, i) => 1 + (i % 5)).join(',');
+  await page.route('https://tiles.openfreemap.org/**', (route) => route.fulfill({ contentType: 'application/json', body: JSON.stringify({ version: 8, sources: {}, layers: [{ id: 'bg', type: 'background', paint: { 'background-color': '#eee' } }] }) }));
+  await page.route('https://example.test/**', (route) => {
+    const path = new URL(route.request().url()).pathname;
+    const type = path.endsWith('.css') ? 'text/css' : 'text/javascript';
+    if (path.startsWith('/dist/')) return route.fulfill({ contentType: type, headers: { 'access-control-allow-origin': '*' }, body: dist(path.slice(6)) });
+    const map = `<figure data-rank-map data-lat="43.6555" data-lng="-79.3893" data-spacing="600" data-ranks-before="${before}" data-ranks-after="${after}">
+      <div data-rank-canvas style="width:600px;height:450px"></div>
+      <button type="button" data-rank-show="before" aria-pressed="true">Before</button><button type="button" data-rank-show="after" aria-pressed="false">After</button></figure>`;
+    return route.fulfill({ contentType: 'text/html', body: `<html><head></head><body>${path === '/map' ? map : '<p>Plain</p>'}<script src="/dist/index.js?v=7"></script></body></html>` });
+  });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('https://example.test/plain');
+  await expect(page.locator('script[data-wfc-maplibre]')).toHaveCount(0);
+  await page.goto('https://example.test/map');
+  await expect(page.locator('script[data-wfc-maplibre]')).toHaveAttribute('src', 'https://example.test/dist/maplibre.js?v=7');
+  await expect(page.locator('link[href="https://example.test/dist/maplibre.css?v=7"]')).toHaveCount(1);
+  await expect(page.locator('.cs-rank-pin')).toHaveCount(25);
+  await expect(page.locator('.cs-rank-pin').first()).toHaveText(/^20/);
+  await page.locator('[data-rank-show="after"]').click();
+  await expect(page.locator('.cs-rank-pin').first()).toHaveText(/^1/);
+  await expect(page.locator('[data-rank-show="after"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('[data-rank-map]')).toHaveClass(/is-ready/);
+});

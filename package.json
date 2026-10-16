@@ -33,6 +33,7 @@
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "@finsweet/attributes": "2.7.1"
+    "@finsweet/attributes": "2.7.1",
+    "maplibre-gl": "^6.14.0"
   }
 }

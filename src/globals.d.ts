@@ -1,3 +1,5 @@
+import type * as MapLibre from 'maplibre-gl';
+
 export {};
 
 declare global {
@@ -17,5 +19,7 @@ declare global {
       source?: string;
     };
     Webflow?: { env?: (mode: string) => boolean };
+    // Set by dist/maplibre.js (src/maplibre.ts), loaded on demand by rank-map.
+    wfcMapLibre?: typeof MapLibre;
   }
 }

@@ -51,6 +51,9 @@ redirects before the domain moves (the regex row is one rule).
 | `/case-studies/commercial-liquidation-local-seo-toronto` | `/case-studies` (no new page) | 301 |
 | `/case-studies/home-renovation-contractor-seo-ppc-toronto` | `/case-studies` (no new page) | 301 |
 | `/case-studies/creative-agency-content-seo-toronto` | `/case-studies` (no new page) | 301 |
+| `/blog/seo-for-real-estate-agents` | `/services/real-estate-seo-agency` (article removed, client 2026-10-16) | 301 |
+| `/blog/seo-for-dentists` | `/services/dental-seo-agency` (article removed, client 2026-10-16) | 301 |
+| `/blog/seo-for-lawyers` | `/services/law-firm-seo-agency` (article removed, client 2026-10-16) | 301 |
 | `/blog` | `/research` | 301 |
 | `/blog/(.*)` | `/research/%1` (all 39 posts kept their slugs) | 301 |
 

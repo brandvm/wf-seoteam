@@ -4,7 +4,19 @@ import { rm } from 'node:fs/promises';
 const dev = process.argv.includes('--dev');
 
 const config = {
-  entryPoints: ['src/index.ts', 'src/fs-bundle.ts', 'src/styles.css'],
+  // maplibre.js (+ maplibre.css) and maplibre-worker.js are loaded only on
+  // pages with a rank map (src/modules/rank-map.ts). esbuild can't split an
+  // IIFE bundle, so MapLibre is its own entry instead of a dynamic import.
+  entryPoints: [
+    { in: 'src/index.ts', out: 'index' },
+    { in: 'src/fs-bundle.ts', out: 'fs-bundle' },
+    { in: 'src/styles.css', out: 'styles' },
+    { in: 'src/maplibre.ts', out: 'maplibre' },
+    { in: 'src/maplibre.css', out: 'maplibre' },
+    // MapLibre's tile worker: a self-contained script (no imports or
+    // exports), so the IIFE wrapper doesn't change it.
+    { in: 'node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs', out: 'maplibre-worker' },
+  ],
   bundle: true,
   outdir: 'dist',
   minify: !dev,
@@ -27,7 +39,7 @@ if (dev) {
   // the LAN should reach the dev server.
   await ctx.serve({ servedir: 'dist', host: '127.0.0.1', port: 3000, cors: { origin: '*' } });
   for (const e of config.entryPoints) {
-    console.log('dev → http://localhost:3000/' + e.split('/').pop().replace(/\.ts$/, '.js'));
+    console.log('dev → http://localhost:3000/' + e.out + (e.in.endsWith('.css') ? '.css' : '.js'));
   }
 } else {
   // Start clean so a renamed or removed entry never leaves a stale file in
