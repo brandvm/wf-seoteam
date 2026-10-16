@@ -23,6 +23,7 @@
     "wf:styles": "node .claude/skills/webflow-build/scripts/styles.mjs",
     "wf:html": "node .claude/skills/webflow-build/scripts/html.mjs",
     "wf:perf": "node .claude/skills/webflow-build/scripts/perf.mjs",
+    "wf:seo": "node scripts/wf-seo.mjs",
     "finsweet": "node scripts/finsweet.mjs"
   },
   "devDependencies": {

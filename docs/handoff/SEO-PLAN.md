@@ -17,6 +17,20 @@ custom code, and that code is kept here in the repo as the source of truth.
 > domain `https://www.seoteamtoronto.ca`. Still to do: step 5 (site-wide head
 > tags in `loader.html`), step 7 (`wf:seo` check), step 4 at launch;
 > socials for `sameAs` when the URLs exist.
+>
+> **Update 2026-10-16 (later):** step 5 done: the head code (loader.html
+> piece 1, re-installed) adds `og:site_name` (SEO Team Toronto) and
+> `og:locale` (en_CA), and `theme-color` is the light bar's `#fcfaf9`. No
+> `twitter:site` until there is an X handle. Step 7 done: `pnpm wf:seo
+> [url] [--canonical] [--json]` (scripts/wf-seo.mjs) crawls every page and
+> fails on missing title, description or Open Graph tags, not exactly one
+> h1, invalid JSON-LD or HTML entities in it, unexpected noindex, and (with
+> --canonical, for production) a missing canonical. Staging: 90 pages, all
+> pass. Warnings left: 25 titles over 60 characters (imported article Meta
+> Titles and the case study pattern Name + " | SEO Team Case Study") and
+> 3 article descriptions over 160. Fixed on the way: Arman Tale's Role "&"
+> → "and" (Webflow wrote `&amp;` into the schema). Still to do: Rich
+> Results Test on one page of each type.
 
 ## What staging outputs today (checked 2026-10-15 with curl)
 
