@@ -839,6 +839,23 @@ html.is-menu-open { overflow: hidden; }
 .about-card:hover .about-card-img { transform: scale(1.03); }
 @media (prefers-reduced-motion: reduce) { .about-card-img { transition: none; } }
 
+/* repo-css: js-state — Marquee (About team row): marquee.ts clones the
+   items, sets --marquee-distance (one set, gap included) and
+   --marquee-duration, and adds .is-marquee; the row then runs in one line
+   and loops. Without the class (no script, reduced motion) the row keeps
+   its Designer layout, which wraps. Paused on hover, on keyboard focus and
+   off screen (.is-marquee-paused). Clipping is the Designer's wrapper
+   (Team Marquee, overflow hidden). */
+@keyframes marquee-scroll { to { transform: translate3d(var(--marquee-distance, -50%), 0, 0); } }
+[data-marquee].is-marquee {
+  flex-wrap: nowrap;
+  width: max-content;
+  animation: marquee-scroll var(--marquee-duration, 40s) linear infinite;
+}
+[data-marquee].is-marquee:hover,
+[data-marquee].is-marquee:focus-within,
+[data-marquee].is-marquee-paused { animation-play-state: paused; }
+
 /* ---- Service template (2026-10-14) ---- */
 
 /* repo-css: designer-cant — child styles on parent hover, and nth-child:

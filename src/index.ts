@@ -12,6 +12,7 @@ import { initNav } from './modules/nav';
 import { initPanelShader } from './modules/panel-shader';
 import { initCaseVisuals } from './modules/case-visuals';
 import { initCardCursor } from './modules/card-cursor';
+import { initMarquee } from './modules/marquee';
 import { initParallax } from './modules/parallax';
 import { initRankMap } from './modules/rank-map';
 import { initShare } from './modules/share';
@@ -50,6 +51,7 @@ function boot() {
   run('card-cursor', initCardCursor);
   run('parallax', initParallax);
   run('rank-map', initRankMap);
+  run('marquee', initMarquee);
   // Last: Finsweet starts after the other modules have set their attributes.
   run('finsweet-loader', initFinsweetLoader);
   // Add project feature initializers here: run('<name>', init<Name>);

@@ -269,6 +269,14 @@ rank-map (MapLibre as its own bundle, loaded only where a map is),
 count-up text, bars on scroll. Home Industries: static 18-industry grid
 (10 linked), nav Home item and logo link, Get a Quote with chip.
 
+2026-10-16 (night) — **About team, loop.** Team collection = the eight
+current members (Arman T., Hamoun A., Mike R., Bianca D., Jay C., Kajal A.,
+Asheem S., Laura L.; sorted by Order); Mariia H. and Nathalie N. deleted
+(Kajal). Photos 640×800 WebP, 17–35 KB, in the asset folder People. The row
+loops (`src/modules/marquee.ts`, `data-marquee` on the Team Grid list, Team
+Marquee clips it; repo CSS §05 Marquee): ~40px/s, paused on hover, focus and
+off screen; with reduced motion or without the script it wraps as a grid.
+
 ## Ground rules for this project
 
 - Prototype first (wf-template workflow): the design is built and
