@@ -223,8 +223,13 @@ templates (typed in the Designer with CMS field tokens; GOTCHAS). Sources in
 pages and the Services Template; Research → Image, Case Studies → Photo,
 Authors → Photo. Checked after publishing on all 88 pages: every JSON-LD
 block parses, no empty values or HTML entities, ISO dates, og:image on every
-page. No schema, as planned: legal pages, Sitemap, Careers. Open: the
-in-copy link style in the Designer (approved), favicon and webclip still
+page. No schema, as planned: legal pages, Sitemap, Careers. In-copy link
+style applied (Kajal): nested All Links styles on Service Hero Intro, Cap
+Text, Service Card Text, Body S › Is Answer and the new Text Secondary ›
+Is Copy Text combo (capabilities intro and second list on the Services
+Template); class Copy Link (and › Is On Dark) on the two static Home links.
+Underline 1px at 0.2em in Ink 32 (Paper 48 on dark), accent on hover, 0.2s
+transition. Open: favicon and webclip still
 Webflow's defaults, share images on articles and cases are WebP (LinkedIn
 may not show them).
 

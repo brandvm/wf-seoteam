@@ -25,6 +25,41 @@ collected from client repos into those files.
 
 ## This project
 
+### 2026-10-16 · Styling links inside CMS rich text: nested styles are Designer-only
+- Area: designer
+- Scope: template-candidate
+- Symptom: the in-copy link style needed `.cap-text a`-type rules; the
+  style API writes classes, combos and states only, and a bound RichText
+  in the Designer offers states, not nested selectors.
+- Cause: nested ("When nested inside of") styles aren't in the API, and a
+  bound rich text has no child to select.
+- Fix: build a temporary unbound RichText through the API with the same
+  classes (it comes with Webflow's sample content, links included), select
+  a link in it in the Designer, style selector › HTML Tag › All Links ›
+  "Nest selector inside of" (+), set the styles, then remove the temporary
+  block; the nested style stays. Through Claude in Chrome: find the link's
+  canvas position with JS on the canvas iframe
+  (`iframe.contentDocument`, scale by 1461/innerWidth for screenshots).
+  Traps: a link pointing at the current page adds a "Current" state to the
+  selector (point it elsewhere); Decoration › "…" holds thickness, colour
+  and offset; bind colours with the purple dot or the pill's variable
+  list. A colour entered through the Custom value editor and committed
+  with Return published as `color: @var_variable-…` (invalid); clear it
+  and bind through the dot. After publishing, grep the CSS for `@var_`.
+  Plain Link elements in a paragraph take a class instead (Copy Link,
+  Copy Link › Is On Dark), which the API can write, including
+  `text-decoration-thickness`, `text-underline-offset` and
+  `text-decoration-color`.
+  Transitions: Effects › Transitions (+), Type is a native menu with Font
+  Color and Text Decoration Color; `transition` can't be entered under
+  Custom properties. The Style panel's rows shift between elements (a
+  Variable modes row, the window size), so take a screenshot before each
+  click: one blind sequence produced "Background-Position: 875ms".
+- Status: done (2026-10-16): Service Hero Intro, Cap Text, Service Card
+  Text, Body S › Is Answer, Text Secondary › Is Copy Text, with 0.2s
+  transitions
+- Found by: claude
+
 ### 2026-10-16 · Template JSON-LD with CMS fields: Designer only
 - Area: mcp
 - Scope: template-candidate
@@ -84,7 +119,7 @@ collected from client repos into those files.
     `[{"fieldSlug":"order","direction":"ascending"}]`); "Service = Current
     Service" is still a Designer step.
 - Status: done on Home and the Services Template (2026-10-15); link style
-  pending approval
+  approved and applied 2026-10-16 (entry above)
 - Found by: claude
 
 ### 2026-10-15 · Bulk rich-text content: the Designer's CSV import, not the API
